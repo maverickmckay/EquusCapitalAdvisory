@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header flex justify-between items-center">
+  <div>
+    <h1>HOA Annual Meeting Packet Generator</h1>
+    <p>Create professional annual meeting packets from your governing documents.</p>
+  </div>
+  <a href="/projects/new" class="btn btn-primary btn-lg">+ New Project</a>
+</div>
+
+{% if projects %}
+<div class="card">
+  <h3>Your Projects</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Association</th>
+        <th>State</th>
+        <th>Type</th>
+        <th>Year</th>
+        <th>Updated</th>
+        <th>Output</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for proj in projects %}
+    <tr>
+      <td><a href="/projects/{{ proj.project_id }}"><strong>{{ proj.association_name or proj.project_name }}</strong></a></td>
+      <td>{{ proj.state }}</td>
+      <td>{{ (proj.association.association_type if proj.association else "") or "—" }}</td>
+      <td>{{ proj.meeting_year }}</td>
+      <td class="text-muted">{{ proj.updated_at[:10] if proj.updated_at else "—" }}</td>
+      <td>
+        {% if proj.has_tex %}<span class="badge badge-pass">.tex</span>{% endif %}
+        {% if proj.has_pdf %}<span class="badge badge-info">PDF</span>{% endif %}
+        {% if not proj.has_tex and not proj.has_pdf %}<span class="text-muted">—</span>{% endif %}
+      </td>
+      <td class="flex gap-2">
+        <a href="/projects/{{ proj.project_id }}" class="btn btn-secondary btn-sm">Open</a>
+        <a href="/projects/{{ proj.project_id }}/export" class="btn btn-primary btn-sm">Export</a>
+        <button onclick="deleteProject('{{ proj.project_id }}')" class="btn btn-danger btn-sm">Delete</button>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center; padding: 60px 24px;">
+  <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
+  <h3 style="margin-bottom: 8px; font-size: 18px;">No projects yet</h3>
+  <p style="color: var(--gray-600); margin-bottom: 20px;">
+    Create a new project for each HOA or condominium association.
+    Upload governing documents, enter meeting details, and generate a professional annual meeting packet.
+  </p>
+  <a href="/projects/new" class="btn btn-primary btn-lg">Create Your First Project</a>
+</div>
+{% endif %}
+
+<div class="card" style="margin-top: 24px;">
+  <h3>How It Works</h3>
+  <div class="grid-3" style="margin-top: 8px;">
+    <div style="padding: 16px; background: var(--gray-50); border-radius: var(--radius);">
+      <div style="font-size: 24px; margin-bottom: 8px;">1️⃣</div>
+      <strong>Create a Project</strong>
+      <p class="text-muted mt-1">Enter the association name, state, and meeting year.</p>
+    </div>
+    <div style="padding: 16px; background: var(--gray-50); border-radius: var(--radius);">
+      <div style="font-size: 24px; margin-bottom: 8px;">2️⃣</div>
+      <strong>Upload Documents</strong>
+      <p class="text-muted mt-1">Upload bylaws, financials, board roster, and other files. The system classifies them automatically.</p>
+    </div>
+    <div style="padding: 16px; background: var(--gray-50); border-radius: var(--radius);">
+      <div style="font-size: 24px; margin-bottom: 8px;">3️⃣</div>
+      <strong>Review &amp; Generate</strong>
+      <p class="text-muted mt-1">Complete missing items, validate compliance, and generate a professional LaTeX/PDF packet.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function deleteProject(projectId) {
+  if (!confirm('Delete this project? This cannot be undone.')) return;
+  try {
+    await apiFetch(`/api/projects/${projectId}`, { method: 'DELETE' });
+    location.reload();
+  } catch(e) {
+    showAlert(e.message, 'error');
+  }
+}
+</script>
+{% endblock %}

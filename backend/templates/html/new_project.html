@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}New Project — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Create New Project</h1>
+  <p>Enter the basic association information to get started.</p>
+</div>
+
+<div class="card" style="max-width: 700px;">
+  <h3>Association Information</h3>
+  <form id="newProjectForm">
+    <div class="grid-2">
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label>Association Legal Name *</label>
+        <input type="text" name="association_name" required placeholder="e.g. Lakeside Condominiums Association, Inc." />
+      </div>
+
+      <div class="form-group">
+        <label>State *</label>
+        <select name="state" required>
+          <option value="">— Select State —</option>
+          {% for jx in jurisdictions %}
+          <option value="{{ jx }}">{{ jx }} (Jurisdiction File Available)</option>
+          {% endfor %}
+          {% for s in ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WY"] %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+        <div class="text-muted mt-1">States with jurisdiction files have enhanced rule defaults.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Association Type *</label>
+        <select name="association_type" required>
+          <option value="condominium">Condominium</option>
+          <option value="hoa">Homeowners Association (HOA)</option>
+          <option value="cooperative">Cooperative</option>
+          <option value="townhome">Townhome Association</option>
+          <option value="master">Master Association</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Meeting Year *</label>
+        <input type="number" name="meeting_year" value="2026" min="2020" max="2040" required />
+      </div>
+
+      <div class="form-group">
+        <label>Number of Units</label>
+        <input type="number" name="unit_count" placeholder="e.g. 48" min="1" />
+      </div>
+    </div>
+
+    <hr />
+    <h3 style="margin-bottom: 12px;">Management Company (Optional)</h3>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Management Company Name</label>
+        <input type="text" name="management_company" placeholder="e.g. ABC Property Management" />
+      </div>
+      <div class="form-group">
+        <label>Contact Name</label>
+        <input type="text" name="management_contact" placeholder="Jane Smith, CAM" />
+      </div>
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="email" name="management_email" placeholder="jane@abcproperty.com" />
+      </div>
+      <div class="form-group">
+        <label>Contact Phone</label>
+        <input type="tel" name="management_phone" placeholder="(608) 555-1234" />
+      </div>
+    </div>
+
+    <div id="formError" class="alert alert-error" style="display:none;"></div>
+
+    <div class="flex gap-2 mt-3">
+      <button type="submit" class="btn btn-primary btn-lg">Create Project →</button>
+      <a href="/" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('newProjectForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  if (data.meeting_year) data.meeting_year = parseInt(data.meeting_year);
+  if (data.unit_count) data.unit_count = parseInt(data.unit_count);
+  else delete data.unit_count;
+
+  const errDiv = document.getElementById('formError');
+  errDiv.style.display = 'none';
+
+  try {
+    const result = await apiFetch('/api/projects', { method: 'POST', body: data });
+    window.location.href = `/projects/${result.project_id}`;
+  } catch(e) {
+    errDiv.textContent = e.message;
+    errDiv.style.display = 'block';
+  }
+});
+</script>
+{% endblock %}

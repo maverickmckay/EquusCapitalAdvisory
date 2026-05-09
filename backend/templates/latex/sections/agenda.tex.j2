@@ -1,0 +1,78 @@
+%% ════════════════════════════════════════════════════════════════
+%%  ANNUAL MEETING AGENDA
+%% ════════════════════════════════════════════════════════════════
+\section{Annual Meeting Agenda}
+
+\begin{center}
+{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
+{\large {{ meeting_year }} Annual Meeting of Unit Owners}\\[4pt]
+{% if meeting.meeting_date %}
+{\normalsize {{ meeting.meeting_date | format_date }}
+{% if meeting.meeting_time %} $\cdot$ {{ meeting.meeting_time }}{% endif %}
+{% if meeting.meeting_location %} $\cdot$ {{ meeting.meeting_location | tex_escape }}{% endif %}
+}
+{% endif %}
+\end{center}
+
+\vspace{0.2in}
+
+\noindent\begin{tabular}{@{}p{0.4in}p{1.2in}p{4.1in}@{}}
+\toprule
+\textbf{\#} & \textbf{Time} & \textbf{Item} \\
+\midrule
+
+{% set ns = namespace(counter=1) %}
+{% macro aitem(title, subnote="", time="") %}
+{{ ns.counter }}. & {{ time }} & {{ title | tex_escape }}
+{% if subnote %}\\ & & \small\textit{ {{ subnote | tex_escape }} }{% endif %} \\[4pt]
+{% set ns.counter = ns.counter + 1 %}
+{% endmacro %}
+
+{{ aitem("Call to Order") }}
+{{ aitem("Establishment of Quorum") }}
+{{ aitem("Proof of Notice") }}
+{{ aitem("Approval of Agenda") }}
+{{ aitem("Approval of Prior Annual Meeting Minutes",
+         "Prior minutes are presented for approval, or status reported if unavailable.") }}
+
+{% if election.election_required %}
+{{ aitem("Report of Nominations / Candidate Introductions") }}
+{{ aitem("Election of Director(s)",
+         "Owners will elect " ~ (election.seats_up_count | string if election.seats_up_count else "one or more") ~ " director(s) to the Board.") }}
+{% endif %}
+
+{{ aitem("Financial Report",
+         "Treasurer or management will present the current financial summary and approved budget.") }}
+
+{% for item in meeting.special_agenda_items %}
+{{ aitem(item) }}
+{% endfor %}
+
+{{ aitem("Old Business") }}
+{{ aitem("New Business") }}
+{{ aitem("Adjournment of Annual Meeting") }}
+
+\bottomrule
+\end{tabular}
+
+{% if jx.include_org_meeting_note %}
+\vspace{0.25in}
+\begin{notebox}
+\textbf{Organizational Meeting of the Board of Directors}\\
+Immediately following the adjournment of the Annual Meeting of Unit Owners, the Board of Directors will hold its
+Organizational Meeting to elect officers for the ensuing year. Unit owners are welcome to observe but this is
+a board meeting, not a member meeting.
+{% if jx.org_meeting_note %}
+
+\smallskip
+\textit{ {{ jx.org_meeting_note | tex_escape }} }
+{% endif %}
+\end{notebox}
+{% endif %}
+
+\vspace{0.3in}
+{\small\color{midgray}
+\textit{The order of agenda items may be adjusted by the presiding officer at the meeting. Additional items may
+be introduced under New Business. Agenda items requiring a vote are conducted in accordance with the
+Association's governing documents and applicable state law.}
+}

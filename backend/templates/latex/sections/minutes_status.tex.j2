@@ -1,0 +1,83 @@
+%% ════════════════════════════════════════════════════════════════
+%%  PRIOR MINUTES STATUS
+%% ════════════════════════════════════════════════════════════════
+\section{Prior Annual Meeting Minutes}
+
+{% set status = manual_entries.get("prior_minutes_status", "available") if manual_entries else "unknown" %}
+{% set has_minutes = has_prior_minutes %}
+
+{% if has_minutes %}
+
+\begin{center}
+{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
+{\large Minutes of the {{ (meeting_year - 1) }} Annual Meeting of Unit Owners}
+\end{center}
+
+\vspace{0.15in}
+\noindent The minutes of the {{ (meeting_year - 1) }} Annual Meeting of Unit Owners are attached hereto
+and are presented for approval at this meeting.
+
+\vspace{0.2in}
+\begin{notebox}
+\textbf{Agenda Item: Approval of Prior Annual Meeting Minutes}\\[4pt]
+\textit{The presiding officer will call for a motion to approve the {{ (meeting_year - 1) }}
+Annual Meeting Minutes as presented (or as corrected). Following a second and any
+corrections, a vote will be taken.}
+\end{notebox}
+
+\vspace{0.3in}
+\noindent\textbf{Motion:} \rule{2in}{0.4pt} \textbf{Second:} \rule{2in}{0.4pt}
+
+\vspace{0.1in}
+\noindent\textbf{Vote:} Approved $\square$ \quad Denied $\square$ \quad Tabled $\square$
+
+\vspace{0.1in}
+\noindent\textbf{Notes:} \rule{4.5in}{0.4pt}
+
+{% elif status == "no_quorum" %}
+
+\begin{warningbox}
+\textbf{Prior Annual Meeting: Quorum Not Achieved}\\[6pt]
+The {{ (meeting_year - 1) }} Annual Meeting of Unit Owners did not achieve quorum. No formal meeting
+was held and therefore no minutes were generated. This is noted for the record.
+
+\vspace{0.1in}
+No approval of prior minutes is required. The presiding officer should announce this status
+at the opening of the {{ meeting_year }} Annual Meeting.
+\end{warningbox}
+
+{% elif status == "not_available" %}
+
+\begin{warningbox}
+\textbf{Prior Annual Meeting Minutes Not Available}\\[6pt]
+Minutes of the {{ (meeting_year - 1) }} Annual Meeting of Unit Owners have not been located in the
+Association's records at the time this packet was prepared.
+
+\vspace{0.1in}
+\textbf{Presiding Officer Guidance:} At the Annual Meeting, the chair should announce that
+the prior minutes are not currently available, state the reason if known (e.g., records transition,
+management company change), and note that minutes will be distributed and presented for approval
+once located or reconstructed. This should be noted in the {{ meeting_year }} meeting minutes.
+
+\vspace{0.1in}
+If it is determined that no annual meeting was held in {{ (meeting_year - 1) }}, the chair should
+so state and no approval motion is required.
+\end{warningbox}
+
+{% else %}
+
+\begin{warningbox}
+\textbf{Prior Annual Meeting Minutes Status Unconfirmed}\\[6pt]
+The status of the {{ (meeting_year - 1) }} Annual Meeting minutes has not been confirmed.
+Please provide one of the following before finalizing this packet:
+\begin{itemize}[noitemsep]
+\item Upload the prior annual meeting minutes;
+\item Confirm that the prior meeting lacked quorum; or
+\item Confirm that the minutes are unavailable and explain why.
+\end{itemize}
+\end{warningbox}
+
+\vspace{0.3in}
+\noindent\textit{[Prior minutes section placeholder --- confirm status and regenerate.]}
+
+{% endif %}

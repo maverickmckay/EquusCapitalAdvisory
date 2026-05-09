@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% block title %}Meeting Setup — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="text-muted mb-1"><a href="/">Projects</a> › <a href="/projects/{{ project.project_id }}">{{ association.association_name }}</a> › Setup</div>
+  <h1>Meeting Setup</h1>
+  <p>Enter meeting logistics, financial data, and election information.</p>
+</div>
+
+<div class="steps">
+  <a href="/projects/{{ project.project_id }}">1. Project Overview</a>
+  <a href="/projects/{{ project.project_id }}/upload">2. Upload Documents</a>
+  <span class="active">3. Meeting Setup</span>
+  <a href="/projects/{{ project.project_id }}/export">4. Generate &amp; Export</a>
+</div>
+
+<form id="setupForm">
+<!-- Meeting Details -->
+<div class="card">
+  <h3>📅 Meeting Details</h3>
+  <div class="grid-2">
+    <div class="form-group">
+      <label>Meeting Date *</label>
+      <input type="date" id="meeting_date" value="{{ meeting.meeting_date or '' }}" />
+    </div>
+    <div class="form-group">
+      <label>Meeting Time *</label>
+      <input type="text" id="meeting_time" value="{{ meeting.meeting_time or '' }}" placeholder="e.g. 6:00 PM" />
+    </div>
+    <div class="form-group">
+      <label>Registration / Check-in Opens</label>
+      <input type="text" id="registration_time" value="{{ meeting.registration_time or '' }}" placeholder="e.g. 5:45 PM" />
+    </div>
+    <div class="form-group">
+      <label>Notice Date (date notice will be sent)</label>
+      <input type="date" id="notice_date" value="{{ meeting.notice_date or '' }}" />
+    </div>
+    <div class="form-group" style="grid-column: 1 / -1;">
+      <label>Meeting Location / Venue Name *</label>
+      <input type="text" id="meeting_location" value="{{ meeting.meeting_location or '' }}" placeholder="e.g. Community Room, Lakeside Condo Building" />
+    </div>
+    <div class="form-group" style="grid-column: 1 / -1;">
+      <label>Full Meeting Address</label>
+      <input type="text" id="meeting_address" value="{{ meeting.meeting_address or '' }}" placeholder="123 Lake Drive, Madison, WI 53701" />
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="form-group">
+      <label>Quorum Threshold (%)</label>
+      <input type="number" id="quorum_threshold" value="{{ meeting.quorum_threshold or '' }}" placeholder="e.g. 25 for 25%%" min="1" max="100" step="0.1" />
+      <div class="text-muted mt-1">Auto-extracted from bylaws if uploaded. Enter override here if needed.</div>
+    </div>
+    <div class="form-group">
+      <label>Proxy Permitted?</label>
+      <select id="proxy_permitted">
+        <option value="">Auto-detect from bylaws</option>
+        <option value="true" {% if meeting.proxy_permitted == true %}selected{% endif %}>Yes — Proxy voting permitted</option>
+        <option value="false" {% if meeting.proxy_permitted == false %}selected{% endif %}>No — No proxy voting</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Proxy Deadline</label>
+      <input type="date" id="proxy_deadline" value="{{ meeting.proxy_deadline or '' }}" />
+    </div>
+    <div class="form-group">
+      <label>Virtual / Remote Option?</label>
+      <select id="virtual_option">
+        <option value="false" {% if not meeting.virtual_option %}selected{% endif %}>In-person only</option>
+        <option value="true" {% if meeting.virtual_option %}selected{% endif %}>Virtual participation available</option>
+      </select>
+    </div>
+  </div>
+  <button type="button" onclick="saveMeeting()" class="btn btn-primary">Save Meeting Details</button>
+  <span id="meetingSave" style="margin-left: 10px; font-size: 12px; color: var(--success); display: none;">✓ Saved</span>
+</div>
+
+<!-- Election -->
+<div class="card">
+  <h3>🗳️ Election Information</h3>
+  <div class="grid-2">
+    <div class="form-group">
+      <label>Election Required This Year?</label>
+      <select id="election_required">
+        <option value="">Not determined</option>
+        <option value="true" {% if election.election_required == true %}selected{% endif %}>Yes — Election required</option>
+        <option value="false" {% if election.election_required == false %}selected{% endif %}>No — No election this year</option>
+      </select>
+      <div class="text-muted mt-1">Auto-detected from bylaws if uploaded.</div>
+    </div>
+    <div class="form-group">
+      <label>Number of Seats Up for Election</label>
+      <input type="number" id="seats_up_count" value="{{ election.seats_up_count or '' }}" min="0" max="20" placeholder="e.g. 2" />
+    </div>
+    <div class="form-group">
+      <label>Director Term Length (years)</label>
+      <input type="number" id="director_term_length_years" value="{{ election.director_term_length_years or '' }}" min="1" max="10" placeholder="e.g. 3" />
+    </div>
+    <div class="form-group">
+      <label>Staggered Terms?</label>
+      <select id="staggered_terms">
+        <option value="">Unknown</option>
+        <option value="true" {% if election.staggered_terms == true %}selected{% endif %}>Yes — Staggered terms</option>
+        <option value="false" {% if election.staggered_terms == false %}selected{% endif %}>No — All terms same</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Nominations from Floor?</label>
+      <select id="nomination_from_floor">
+        <option value="true" {% if election.nomination_from_floor != false %}selected{% endif %}>Yes — Floor nominations permitted</option>
+        <option value="false" {% if election.nomination_from_floor == false %}selected{% endif %}>No — Advance nominations only</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Board Size (total directors)</label>
+      <input type="number" id="board_size" value="{{ election.board_size or '' }}" min="1" max="20" />
+    </div>
+  </div>
+  <button type="button" onclick="saveElection()" class="btn btn-primary">Save Election Info</button>
+  <span id="electionSave" style="margin-left: 10px; font-size: 12px; color: var(--success); display: none;">✓ Saved</span>
+</div>
+
+<!-- Financial -->
+<div class="card">
+  <h3>💰 Financial Information</h3>
+  <div class="grid-2">
+    <div class="form-group">
+      <label>Approved Budget — Total Amount</label>
+      <input type="number" id="approved_budget_total" value="{{ financial.approved_budget_total or '' }}" step="0.01" min="0" placeholder="e.g. 150000.00" />
+    </div>
+    <div class="form-group">
+      <label>Budget Year</label>
+      <input type="number" id="approved_budget_year" value="{{ financial.approved_budget_year or '' }}" min="2020" max="2040" />
+    </div>
+    <div class="form-group">
+      <label>Prior Year Total Income</label>
+      <input type="number" id="prior_year_end_income" value="{{ financial.prior_year_end_income or '' }}" step="0.01" min="0" />
+    </div>
+    <div class="form-group">
+      <label>Prior Year Total Expenses</label>
+      <input type="number" id="prior_year_end_expenses" value="{{ financial.prior_year_end_expenses or '' }}" step="0.01" min="0" />
+    </div>
+    <div class="form-group">
+      <label>Reserve Fund Balance</label>
+      <input type="number" id="reserve_fund_balance" value="{{ financial.reserve_fund_balance or '' }}" step="0.01" min="0" />
+    </div>
+    <div class="form-group">
+      <label>Reserve % Funded</label>
+      <input type="number" id="reserve_percent_funded" value="{{ financial.reserve_percent_funded or '' }}" step="0.1" min="0" max="200" />
+    </div>
+    <div class="form-group">
+      <label>Audit Completed?</label>
+      <select id="audit_completed">
+        <option value="">Unknown</option>
+        <option value="true" {% if financial.audit_completed == true %}selected{% endif %}>Yes</option>
+        <option value="false" {% if financial.audit_completed == false %}selected{% endif %}>No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Audit Year</label>
+      <input type="number" id="audit_year" value="{{ financial.audit_year or '' }}" min="2015" max="2040" />
+    </div>
+    <div class="form-group" style="grid-column: 1 / -1;">
+      <label>Budget Notes</label>
+      <textarea id="approved_budget_notes" rows="2" placeholder="Key notes about the budget...">{{ financial.approved_budget_notes or '' }}</textarea>
+    </div>
+  </div>
+  <button type="button" onclick="saveFinancial()" class="btn btn-primary">Save Financial Info</button>
+  <span id="financialSave" style="margin-left: 10px; font-size: 12px; color: var(--success); display: none;">✓ Saved</span>
+</div>
+
+<!-- Prior minutes status -->
+<div class="card">
+  <h3>📝 Prior Minutes Status</h3>
+  <div class="form-group">
+    <label>Prior Annual Meeting Minutes Status</label>
+    <select id="prior_minutes_status" onchange="saveManualEntry('prior_minutes_status', this.value)">
+      <option value="unknown">Unknown / Not confirmed</option>
+      <option value="available">Available (uploaded or on file)</option>
+      <option value="no_quorum">Prior meeting lacked quorum — no minutes exist</option>
+      <option value="not_available">Minutes not available (records gap)</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Special / Special Assessment on Agenda?</label>
+    <select id="special_assessment_vote" onchange="saveManualEntry('special_assessment_vote', this.value === 'true')">
+      <option value="false">No special assessment vote</option>
+      <option value="true">Yes — special assessment vote on agenda</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Bylaw/Declaration Amendment on Agenda?</label>
+    <select id="bylaw_amendment_vote" onchange="saveManualEntry('bylaw_amendment_vote', this.value === 'true')">
+      <option value="false">No amendment vote</option>
+      <option value="true">Yes — amendment vote on agenda</option>
+    </select>
+  </div>
+</div>
+
+</form>
+
+<div class="flex gap-2 mt-3">
+  <a href="/projects/{{ project.project_id }}/export" class="btn btn-primary btn-lg">Continue to Generate Packet →</a>
+  <a href="/projects/{{ project.project_id }}" class="btn btn-secondary btn-lg">← Back to Project</a>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const projectId = '{{ project.project_id }}';
+
+async function saveMeeting() {
+  const payload = {};
+  const date = document.getElementById('meeting_date').value;
+  if (date) payload.meeting_date = date;
+  const time = document.getElementById('meeting_time').value;
+  if (time) payload.meeting_time = time;
+  const regTime = document.getElementById('registration_time').value;
+  if (regTime) payload.registration_time = regTime;
+  const noticeDate = document.getElementById('notice_date').value;
+  if (noticeDate) payload.notice_date = noticeDate;
+  const loc = document.getElementById('meeting_location').value;
+  if (loc) payload.meeting_location = loc;
+  const addr = document.getElementById('meeting_address').value;
+  if (addr) payload.meeting_address = addr;
+  const quorum = document.getElementById('quorum_threshold').value;
+  if (quorum) payload.quorum_threshold = parseFloat(quorum);
+  const proxy = document.getElementById('proxy_permitted').value;
+  if (proxy !== '') payload.proxy_permitted = proxy === 'true';
+  const proxyDead = document.getElementById('proxy_deadline').value;
+  if (proxyDead) payload.proxy_deadline = proxyDead;
+  payload.virtual_option = document.getElementById('virtual_option').value === 'true';
+  try {
+    await apiFetch(`/api/projects/${projectId}/meeting`, { method: 'PUT', body: payload });
+    flashSaved('meetingSave');
+  } catch(e) { showAlert(e.message, 'error'); }
+}
+
+async function saveElection() {
+  const payload = {};
+  const er = document.getElementById('election_required').value;
+  if (er !== '') payload.election_required = er === 'true';
+  const seats = document.getElementById('seats_up_count').value;
+  if (seats) payload.seats_up_count = parseInt(seats);
+  const term = document.getElementById('director_term_length_years').value;
+  if (term) payload.director_term_length_years = parseInt(term);
+  const stag = document.getElementById('staggered_terms').value;
+  if (stag !== '') payload.staggered_terms = stag === 'true';
+  const floor = document.getElementById('nomination_from_floor').value;
+  if (floor !== '') payload.nomination_from_floor = floor === 'true';
+  const bs = document.getElementById('board_size').value;
+  if (bs) payload.board_size = parseInt(bs);
+  try {
+    await apiFetch(`/api/projects/${projectId}/election`, { method: 'PUT', body: payload });
+    flashSaved('electionSave');
+  } catch(e) { showAlert(e.message, 'error'); }
+}
+
+async function saveFinancial() {
+  const payload = {};
+  const fields = ['approved_budget_total','approved_budget_year','prior_year_end_income','prior_year_end_expenses',
+    'reserve_fund_balance','reserve_percent_funded','audit_year','approved_budget_notes'];
+  for (const f of fields) {
+    const el = document.getElementById(f);
+    if (!el) continue;
+    if (f === 'approved_budget_notes') { if (el.value) payload[f] = el.value; }
+    else if (el.value) payload[f] = f === 'approved_budget_notes' ? el.value : (isNaN(el.value) ? el.value : parseFloat(el.value));
+  }
+  const audit = document.getElementById('audit_completed').value;
+  if (audit !== '') payload.audit_completed = audit === 'true';
+  try {
+    await apiFetch(`/api/projects/${projectId}/financial`, { method: 'PUT', body: payload });
+    flashSaved('financialSave');
+  } catch(e) { showAlert(e.message, 'error'); }
+}
+
+async function saveManualEntry(key, value) {
+  try {
+    await apiFetch(`/api/projects/${projectId}/manual_entries`, {
+      method: 'POST',
+      body: { entries: { [key]: value } }
+    });
+  } catch(e) { showAlert(e.message, 'error'); }
+}
+
+function flashSaved(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'inline';
+  setTimeout(() => el.style.display = 'none', 2000);
+}
+</script>
+{% endblock %}

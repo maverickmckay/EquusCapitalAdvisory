@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}{{ association.association_name }} — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header flex justify-between items-center">
+  <div>
+    <div class="text-muted mb-1"><a href="/">All Projects</a> › {{ association.association_name }}</div>
+    <h1>{{ association.association_name }}</h1>
+    <p>{{ association.association_type | upper }} · {{ association.state }} · {{ association.meeting_year }} Annual Meeting</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="/projects/{{ project.project_id }}/upload" class="btn btn-secondary">Upload Documents</a>
+    <a href="/projects/{{ project.project_id }}/setup" class="btn btn-secondary">Meeting Setup</a>
+    <a href="/projects/{{ project.project_id }}/export" class="btn btn-primary">Generate Packet →</a>
+  </div>
+</div>
+
+<!-- Workflow steps -->
+<div class="steps">
+  <span class="active">1. Project Overview</span>
+  <a href="/projects/{{ project.project_id }}/upload">2. Upload Documents</a>
+  <a href="/projects/{{ project.project_id }}/setup">3. Meeting Setup</a>
+  <a href="/projects/{{ project.project_id }}/export">4. Generate &amp; Export</a>
+</div>
+
+<!-- Status Stats -->
+<div class="stat-grid">
+  <div class="stat-box {% if missing_summary.blocker_count > 0 %}blocker{% else %}ok{% endif %}">
+    <div class="number">{{ missing_summary.blocker_count }}</div>
+    <div class="label">Blockers</div>
+  </div>
+  <div class="stat-box {% if missing_summary.required_count > 0 %}required{% else %}ok{% endif %}">
+    <div class="number">{{ missing_summary.required_count }}</div>
+    <div class="label">Required Items Missing</div>
+  </div>
+  <div class="stat-box info">
+    <div class="number">{{ missing_summary.conditional_count }}</div>
+    <div class="label">Conditional Items</div>
+  </div>
+  <div class="stat-box {% if validation.ready_to_generate %}ok{% else %}blocker{% endif %}">
+    <div class="number">{% if validation.ready_to_generate %}✓{% else %}✗{% endif %}</div>
+    <div class="label">Ready to Generate</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Missing Items -->
+  <div class="card">
+    <div class="flex justify-between items-center mb-2">
+      <h3>Missing Items Analysis</h3>
+      <a href="/projects/{{ project.project_id }}/upload" class="btn btn-primary btn-sm">Upload Files</a>
+    </div>
+
+    {% if missing_summary.blockers %}
+    <div class="alert alert-error">
+      <div><strong>BLOCKERS — Packet cannot be generated:</strong>
+        <ul style="margin-top: 6px; padding-left: 16px;">
+        {% for b in missing_summary.blockers %}
+          <li>{{ b.name }}: <span style="font-weight:400">{{ b.description }}</span></li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if missing_summary.required %}
+    <div style="margin-bottom: 12px;">
+      <strong style="font-size: 12px; text-transform: uppercase; color: var(--gray-600);">Required</strong>
+      {% for item in missing_summary.required %}
+      <div style="padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px;">
+        <span class="badge badge-required">Required</span>
+        <strong style="margin-left: 6px;">{{ item.name }}</strong>
+        <div class="text-muted mt-1">{{ item.description }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if missing_summary.conditional %}
+    <div style="margin-bottom: 12px;">
+      <strong style="font-size: 12px; text-transform: uppercase; color: var(--gray-600);">Conditional</strong>
+      {% for item in missing_summary.conditional %}
+      <div style="padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px;">
+        <span class="badge badge-conditional">Conditional</span>
+        <strong style="margin-left: 6px;">{{ item.name }}</strong>
+        <div class="text-muted mt-1">{{ item.description }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not missing_summary.blockers and not missing_summary.required and not missing_summary.conditional %}
+    <div class="alert alert-success">All required items are present. Ready to generate.</div>
+    {% endif %}
+  </div>
+
+  <!-- Validation -->
+  <div class="card">
+    <div class="flex justify-between items-center mb-2">
+      <h3>Compliance Validation</h3>
+      <span class="badge {% if validation.ready_to_generate %}badge-pass{% else %}badge-blocker{% endif %}">
+        {% if validation.ready_to_generate %}READY{% else %}BLOCKED{% endif %}
+      </span>
+    </div>
+
+    {% for result in validation_results %}
+    <div style="padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px;">
+      <div class="flex items-center gap-2">
+        <span class="badge badge-{{ result.severity }}">{{ result.severity }}</span>
+        <strong>{{ result.title }}</strong>
+      </div>
+      <div class="text-muted mt-1">{{ result.detail }}</div>
+      {% if result.recommendation %}
+      <div style="color: var(--info); font-size: 12px; margin-top: 3px;">→ {{ result.recommendation }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Documents -->
+<div class="card">
+  <div class="flex justify-between items-center mb-2">
+    <h3>Uploaded Documents ({{ project.document_status.uploaded_docs | length }})</h3>
+    <a href="/projects/{{ project.project_id }}/upload" class="btn btn-secondary btn-sm">+ Upload More</a>
+  </div>
+
+  {% if project.document_status.uploaded_docs %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Classified As</th>
+        <th>Confidence</th>
+        <th>Parsed</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for doc in project.document_status.uploaded_docs %}
+    <tr>
+      <td><code>{{ doc.original_filename }}</code></td>
+      <td>{{ doc.document_type | replace("_", " ") | title }}</td>
+      <td><span class="badge badge-{{ doc.classification_confidence }}">{{ doc.classification_confidence }}</span></td>
+      <td>
+        {% if doc.parsed %}
+        <span class="text-success">✓</span>
+        {% else %}
+        <span class="text-error">✗</span>
+        {% if doc.parse_error %}<span class="text-muted"> {{ doc.parse_error[:60] }}</span>{% endif %}
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="alert alert-info">No documents uploaded yet. <a href="/projects/{{ project.project_id }}/upload">Upload documents to begin.</a></div>
+  {% endif %}
+</div>
+
+<!-- Extracted Rules -->
+{% if project.extracted_rules %}
+<div class="card">
+  <h3>Extracted Governance Rules</h3>
+  <div class="text-muted mb-2">Rules extracted from uploaded governing documents. Review and confirm ambiguous items.</div>
+  <table class="table">
+    <thead>
+      <tr><th>Rule</th><th>Value</th><th>Confidence</th><th>Source</th><th>Ambiguous?</th></tr>
+    </thead>
+    <tbody>
+    {% for field, rule in project.extracted_rules.items() %}
+    <tr>
+      <td><strong>{{ rule.display_name if rule.display_name else field }}</strong></td>
+      <td><code>{{ rule.value }}</code></td>
+      <td><span class="badge badge-{{ rule.confidence }}">{{ rule.confidence }}</span></td>
+      <td class="text-muted">{{ rule.source_document_id[:8] }}…</td>
+      <td>
+        {% if rule.is_ambiguous %}
+        <span class="badge badge-warning">⚠ {{ rule.ambiguity_note[:60] if rule.ambiguity_note else "Review" }}</span>
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

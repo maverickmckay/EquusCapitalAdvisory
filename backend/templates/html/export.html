@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Generate &amp; Export — {{ app_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="text-muted mb-1"><a href="/">Projects</a> › <a href="/projects/{{ project.project_id }}">{{ association.association_name }}</a> › Export</div>
+  <h1>Generate &amp; Export Packet</h1>
+  <p>Review validation status, generate the LaTeX packet, and download your files.</p>
+</div>
+
+<div class="steps">
+  <a href="/projects/{{ project.project_id }}">1. Project Overview</a>
+  <a href="/projects/{{ project.project_id }}/upload">2. Upload Documents</a>
+  <a href="/projects/{{ project.project_id }}/setup">3. Meeting Setup</a>
+  <span class="active">4. Generate &amp; Export</span>
+</div>
+
+<!-- Readiness check -->
+<div class="stat-grid">
+  <div class="stat-box {% if missing_summary.blocker_count > 0 %}blocker{% else %}ok{% endif %}">
+    <div class="number">{{ missing_summary.blocker_count }}</div>
+    <div class="label">Blockers</div>
+  </div>
+  <div class="stat-box {% if missing_summary.required_count > 0 %}required{% else %}ok{% endif %}">
+    <div class="number">{{ missing_summary.required_count }}</div>
+    <div class="label">Required Missing</div>
+  </div>
+  <div class="stat-box {% if validation.blocker_count > 0 %}blocker{% elif validation.warning_count > 0 %}required{% else %}ok{% endif %}">
+    <div class="number">{{ validation.warning_count }}</div>
+    <div class="label">Warnings</div>
+  </div>
+  <div class="stat-box {% if validation.ready_to_generate %}ok{% else %}blocker{% endif %}">
+    <div class="number">{% if validation.ready_to_generate %}✓{% else %}✗{% endif %}</div>
+    <div class="label">Ready</div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Validation status -->
+  <div class="card">
+    <h3>Validation Status</h3>
+
+    {% if not validation.ready_to_generate %}
+    <div class="alert alert-error">
+      <div>
+        <strong>Cannot generate packet — blockers must be resolved:</strong>
+        <ul style="margin-top: 6px; padding-left: 16px;">
+        {% for b in validation.blockers %}
+          <li>{{ b.title }}: {{ b.detail }}</li>
+        {% endfor %}
+        </ul>
+        <div style="margin-top: 8px;">
+          Go to <a href="/projects/{{ project.project_id }}/setup">Meeting Setup</a> or
+          <a href="/projects/{{ project.project_id }}/upload">Upload Documents</a> to resolve blockers.
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-success">✓ All validation checks passed. Packet is ready to generate.</div>
+    {% endif %}
+
+    {% if validation.warnings %}
+    <div class="alert alert-warning">
+      <div>
+        <strong>{{ validation.warning_count }} warning(s) — packet can be generated but review recommended:</strong>
+        <ul style="margin-top: 6px; padding-left: 16px;">
+        {% for w in validation.warnings %}
+          <li>{{ w.title }}: {{ w.detail }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Generate + Download -->
+  <div class="card">
+    <h3>Generate Packet</h3>
+
+    {% if last_generated %}
+    <div class="alert alert-info" style="margin-bottom: 12px;">
+      Last generated: {{ last_generated[:19] }} UTC
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+      <label>PDF Compilation</label>
+      <select id="compilePdf">
+        <option value="false">LaTeX (.tex) only — no PDF compilation</option>
+        <option value="true">Compile PDF (requires LaTeX installation)</option>
+      </select>
+      <div class="text-muted mt-1">PDF compilation requires pdflatex or latexmk installed on the server.</div>
+    </div>
+
+    <div class="form-group">
+      <label>If Blockers Exist:</label>
+      <select id="forceGenerate">
+        <option value="false">Stop on blockers (recommended)</option>
+        <option value="true">Force generate despite blockers</option>
+      </select>
+    </div>
+
+    <button onclick="generatePacket()" class="btn btn-primary btn-lg" id="generateBtn">
+      ⚙️ Generate Packet
+    </button>
+
+    <div id="generateResult" style="margin-top: 16px; display: none;"></div>
+
+    {% if has_tex or has_pdf %}
+    <hr>
+    <h3 style="margin-top: 0; margin-bottom: 12px;">Download</h3>
+    <div class="flex gap-2 flex-wrap">
+      {% if has_tex %}
+      <a href="/api/projects/{{ project.project_id }}/packet/download/tex" class="btn btn-secondary btn-lg">
+        📄 Download .tex File
+      </a>
+      {% endif %}
+      {% if has_pdf %}
+      <a href="/api/projects/{{ project.project_id }}/packet/download/pdf" class="btn btn-success btn-lg">
+        📕 Download PDF
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Packet Sections Config -->
+<div class="card">
+  <h3>Packet Sections</h3>
+  <div class="text-muted mb-3">Choose which sections to include in the generated packet.</div>
+  <div class="grid-3" id="sectionToggles">
+    {% for section, enabled in project.packet_sections.items() if section not in ('custom_sections',) %}
+    <label style="display:flex; align-items:center; gap: 8px; cursor: pointer; font-size: 13px;">
+      <input type="checkbox" name="{{ section }}" {% if enabled %}checked{% endif %}
+             onchange="updateSection('{{ section }}', this.checked)" />
+      {{ section.replace('_', ' ').title() }}
+    </label>
+    {% endfor %}
+  </div>
+</div>
+
+{% if has_tex %}
+<!-- LaTeX Preview -->
+<div class="card">
+  <div class="flex justify-between items-center mb-2">
+    <h3>LaTeX Source Preview</h3>
+    <button onclick="loadPreview()" class="btn btn-secondary btn-sm">Load Preview</button>
+  </div>
+  <pre id="texPreview" style="display:none; background: var(--gray-50); padding: 16px; border-radius: var(--radius); font-size: 11px; overflow: auto; max-height: 500px; border: 1px solid var(--gray-200);"></pre>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const projectId = '{{ project.project_id }}';
+
+async function generatePacket() {
+  const btn = document.getElementById('generateBtn');
+  const resultDiv = document.getElementById('generateResult');
+  const compilePdf = document.getElementById('compilePdf').value === 'true';
+  const force = document.getElementById('forceGenerate').value === 'true';
+
+  btn.disabled = true;
+  btn.textContent = '⚙️ Generating...';
+  resultDiv.style.display = 'none';
+
+  try {
+    const result = await apiFetch(
+      `/api/projects/${projectId}/packet/generate?compile_pdf=${compilePdf}&force=${force}`,
+      { method: 'POST' }
+    );
+
+    resultDiv.style.display = 'block';
+    if (result.success) {
+      resultDiv.className = 'alert alert-success';
+      resultDiv.innerHTML = `✓ Packet generated successfully!
+        ${result.tex_path ? '<br><strong>.tex:</strong> ' + result.tex_path : ''}
+        ${result.pdf_path ? '<br><strong>PDF:</strong> ' + result.pdf_path : ''}
+        ${result.validation_warnings > 0 ? '<br>⚠️ ' + result.validation_warnings + ' warning(s) — review recommended.' : ''}
+        <br><br><a href="/projects/${projectId}/export" class="btn btn-primary btn-sm" onclick="location.reload()">Refresh Page to Download</a>`;
+    } else if (result.blocked) {
+      resultDiv.className = 'alert alert-error';
+      resultDiv.innerHTML = `✗ ${result.message}<br>Blockers: ${(result.validation?.blockers || []).map(b => b.title).join(', ')}`;
+    } else {
+      resultDiv.className = 'alert alert-error';
+      resultDiv.innerHTML = `✗ Generation failed: ${(result.errors || []).join('; ')}`;
+    }
+    setTimeout(() => location.reload(), 2000);
+  } catch(e) {
+    resultDiv.style.display = 'block';
+    resultDiv.className = 'alert alert-error';
+    resultDiv.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚙️ Generate Packet';
+  }
+}
+
+async function updateSection(section, enabled) {
+  try {
+    await apiFetch(`/api/projects/${projectId}/packet_sections`, {
+      method: 'PUT',
+      body: { [section]: enabled }
+    });
+  } catch(e) { showAlert(e.message, 'error'); }
+}
+
+async function loadPreview() {
+  const pre = document.getElementById('texPreview');
+  try {
+    const result = await apiFetch(`/api/projects/${projectId}/packet/preview`);
+    pre.textContent = result.content;
+    pre.style.display = 'block';
+  } catch(e) {
+    pre.textContent = 'Preview not available: ' + e.message;
+    pre.style.display = 'block';
+  }
+}
+</script>
+{% endblock %}

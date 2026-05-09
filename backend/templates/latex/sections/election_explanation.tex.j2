@@ -1,0 +1,127 @@
+%% ════════════════════════════════════════════════════════════════
+%%  ELECTION EXPLANATION
+%% ════════════════════════════════════════════════════════════════
+\section{Board of Directors Election --- Explanation and Procedures}
+
+\begin{center}
+{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
+{\large {{ meeting_year }} Board of Directors Election}
+\end{center}
+
+\vspace{0.15in}
+
+\subsection*{Why an Election Is Held}
+
+The Association holds annual elections for its Board of Directors in accordance with its governing documents.
+{% if election.staggered_terms %}
+Director terms are staggered so that not all seats expire in the same year, which ensures continuity
+of governance.
+{% endif %}
+At the {{ meeting_year }} Annual Meeting, unit owners will elect
+\textbf{{{ election.seats_up_count or 1 }} director(s)}.
+
+{% if election.director_term_length_years %}
+\vspace{0.1in}
+\noindent Each director elected at this meeting will serve a \textbf{{{ election.director_term_length_years }}-year term}
+beginning upon election.
+{% endif %}
+
+\subsection*{Seats Up for Election}
+
+\begin{center}
+\begin{tabular}{@{}p{2in}p{1.5in}p{2.2in}@{}}
+\toprule
+\textbf{Seat} & \textbf{Term Expires} & \textbf{Current Occupant} \\
+\midrule
+{% if election.seat_map %}
+{% for seat in election.seat_map %}
+{% if seat.up_for_election %}
+{{ seat.seat_label | tex_escape }} &
+{{ meeting_year }} &
+{{ seat.current_occupant | tex_escape if seat.current_occupant else "Vacant" }} \\
+{% endif %}
+{% endfor %}
+{% else %}
+{% for member in election.board_roster %}
+{% if member.seat_up_this_year %}
+Director Seat & {{ meeting_year }} & {{ member.name | tex_escape }} \\
+{% endif %}
+{% endfor %}
+{% endif %}
+\bottomrule
+\end{tabular}
+\end{center}
+
+{% if election.board_roster %}
+\vspace{0.2in}
+\subsection*{Current Board of Directors}
+
+\begin{center}
+\begin{tabular}{@{}p{2.5in}p{1.5in}p{1.8in}@{}}
+\toprule
+\textbf{Name} & \textbf{Title / Office} & \textbf{Term} \\
+\midrule
+{% for member in election.board_roster %}
+{{ member.name | tex_escape }} &
+{{ member.officer_title if member.officer_title else (member.title if member.title else "Director") | tex_escape }} &
+{% if member.term_start and member.term_end %}
+{{ member.term_start.year }} -- {{ member.term_end.year }}
+{% elif member.term_end %}
+Expires {{ member.term_end.year }}
+{% else %}
+---
+{% endif %} \\
+{% endfor %}
+\bottomrule
+\end{tabular}
+\end{center}
+{% endif %}
+
+\subsection*{Nomination Procedures}
+
+{% if jx.nomination_notes %}
+{{ jx.nomination_notes | tex_escape }}
+{% else %}
+Nominations for the Board of Directors may be submitted in writing in advance using the nomination form
+included in this packet, or may be made from the floor at the Annual Meeting.
+{% endif %}
+
+{% if election.nomination_from_floor %}
+\vspace{0.1in}
+\noindent Nominations from the floor will be accepted at the Annual Meeting.
+Any eligible unit owner present at the meeting (or represented by proxy) may nominate
+a qualified unit owner for election.
+{% endif %}
+
+\subsection*{Voting Procedure}
+
+Voting will be conducted at the Annual Meeting. Each unit is entitled to \textbf{one (1) vote}.
+Unit owners may vote in person or by proxy.
+{% if election.ballot_required %}
+A written ballot will be distributed at the meeting.
+{% else %}
+Voting may be conducted by voice vote, show of hands, or written ballot at the discretion
+of the presiding officer.
+{% endif %}
+
+\begin{notebox}
+\textbf{Proxy Reminder:} Unit owners unable to attend the Annual Meeting in person may vote
+in the board election by submitting a valid proxy. See the Proxy Form included in this packet.
+\end{notebox}
+
+{% if jx.director_qualifications_notes %}
+\vspace{0.1in}
+\subsection*{Director Qualifications}
+{{ jx.director_qualifications_notes | tex_escape }}
+{% endif %}
+
+\vspace{0.1in}
+\subsection*{Following the Election: Organizational Meeting}
+
+{% if jx.org_meeting_notes %}
+{{ jx.org_meeting_notes | tex_escape }}
+{% else %}
+Immediately following the Annual Meeting of Unit Owners, the newly constituted Board of Directors
+will hold its Organizational Meeting to elect officers (President, Vice President, Secretary, and Treasurer)
+for the ensuing year.
+{% endif %}

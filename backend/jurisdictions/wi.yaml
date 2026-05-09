@@ -1,0 +1,184 @@
+# Wisconsin Jurisdiction Rules
+# HOA Annual Meeting Packet Generator
+#
+# IMPORTANT LEGAL DISCLAIMER:
+#   This file contains structural defaults and general statutory guidance
+#   for Wisconsin condominium and homeowner associations. It is NOT legal
+#   advice. All content must be reviewed and verified by qualified Wisconsin
+#   counsel before use in any legal proceeding or formal document.
+#   Statutory citations are provided for reference; verify current text.
+#
+# Primary statutes:
+#   - Wisconsin Condominium Ownership Act: Wis. Stat. ch. 703
+#   - Wisconsin Nonprofit Corporation Law: Wis. Stat. ch. 181
+#
+# Rule hierarchy in Wisconsin (general):
+#   1. Mandatory state law provisions (cannot be varied by governing docs)
+#   2. Declaration / Condominium Instruments (may address many governance matters)
+#   3. Bylaws (controls where declaration is silent; may be more detailed)
+#   4. Rules and Regulations (operational rules adopted by board)
+#   5. Board resolutions (specific decisions)
+#
+# NOTE: Association-specific governing documents control where they address
+# a subject and are not inconsistent with mandatory statutory requirements.
+# Always check the specific governing documents first.
+
+state: WI
+state_name: Wisconsin
+display_name: Wisconsin (Condominium / HOA)
+primary_statutes:
+  - citation: "Wis. Stat. ch. 703"
+    description: "Wisconsin Condominium Ownership Act"
+    url_note: "See Wisconsin State Legislature website for current text"
+  - citation: "Wis. Stat. ch. 181"
+    description: "Wisconsin Nonprofit Corporation Law"
+    url_note: "Applies to associations incorporated as nonprofit corporations"
+
+# ---------------------------------------------------------------------------
+# Meeting defaults (apply where governing documents are silent)
+# ---------------------------------------------------------------------------
+meetings:
+  annual_meeting_required: true
+  annual_meeting_statute: "Wis. Stat. § 703.15(2)"
+  annual_meeting_notes: >
+    The Condominium Ownership Act and typical bylaws require an annual
+    meeting of unit owners. The specific timing is usually set by
+    the association's bylaws; confirm with governing documents.
+
+  default_notice_period_days: 10
+  default_notice_period_max_days: 60
+  notice_statute: "Wis. Stat. § 181.0705 (nonprofit corp); check association bylaws"
+  notice_notes: >
+    Wisconsin nonprofit corporation law sets a default 10-day minimum
+    notice period for member meetings. Many condominium association bylaws
+    increase this to 15, 21, or 30 days. The bylaw requirement controls
+    if it is more protective of member rights. Always use the longer period.
+
+  notice_methods_permitted:
+    - us_mail
+    - email
+    - hand_delivery
+  notice_method_notes: >
+    Bylaws typically specify the permitted notice method. Email notice
+    may require owner consent. Confirm with governing documents.
+
+  quorum_notes: >
+    Quorum is typically set by the association's bylaws, often expressed
+    as a percentage of votes or units represented in person or by proxy.
+    A common range is 20%–33% for typical condo associations. Confirm
+    with governing documents; the statute does not mandate a specific percentage.
+
+  adjournment_notes: >
+    If quorum is not reached at the first call, bylaws typically permit
+    adjournment to a later date. At the adjourned meeting, a reduced
+    quorum requirement sometimes applies. Confirm with governing documents.
+
+  remote_meeting_permitted: true
+  remote_meeting_notes: >
+    Wisconsin law permits electronic and remote participation in meetings
+    if the governing documents authorize it. Verify with bylaws and
+    confirm technical arrangements satisfy any governing-document requirements.
+
+# ---------------------------------------------------------------------------
+# Proxy rules
+# ---------------------------------------------------------------------------
+proxy:
+  proxy_permitted: true
+  proxy_statute: "Wis. Stat. § 181.0722"
+  proxy_notes: >
+    Wisconsin nonprofit corporation law permits proxy voting unless
+    prohibited by the articles or bylaws. Most condominium association
+    bylaws expressly permit and regulate proxies. The proxy form should
+    identify the specific meeting and comply with any bylaw requirements.
+  proxy_single_meeting_default: true
+  proxy_written_required: true
+  proxy_revocable_default: true
+  proxy_agent_default: "any other unit owner or person designated in writing"
+
+# ---------------------------------------------------------------------------
+# Election rules
+# ---------------------------------------------------------------------------
+elections:
+  election_notes: >
+    Director elections are typically held at the annual meeting per bylaws.
+    Term lengths (commonly 1–3 years) and staggering arrangements are
+    set by the governing documents. Confirm the seat map and expiring terms
+    against the actual board records and bylaws before each annual meeting.
+  nomination_notes: >
+    Nomination procedures are governed by the bylaws. Many associations
+    permit nominations from the floor in addition to any advance nomination
+    process. Confirm with governing documents.
+  director_qualifications_notes: >
+    Bylaws typically require directors to be unit owners (or spouses/partners
+    of owners) and in good standing on assessments. Confirm qualifications
+    requirements with governing documents.
+  organizational_meeting_notes: >
+    It is standard Wisconsin condominium practice for the board to hold
+    an organizational meeting immediately following the annual meeting to
+    elect officers. This should appear on the agenda.
+
+# ---------------------------------------------------------------------------
+# Financial reporting
+# ---------------------------------------------------------------------------
+financial_reporting:
+  annual_report_notes: >
+    Wisconsin Condominium Ownership Act (Wis. Stat. § 703.165) requires
+    the association to maintain financial records and make them available
+    to unit owners. Many bylaws require annual financial statements to be
+    distributed to owners. Confirm the specific obligation in the governing
+    documents. Preparation of reviewed or audited financials may be required
+    by bylaws or lender requirements.
+  budget_approval_notes: >
+    Budgets are typically approved by the board prior to the fiscal year.
+    Some associations require owner ratification. Confirm budget-adoption
+    procedure with governing documents.
+  reserve_fund_notes: >
+    Wisconsin law does not mandate a specific reserve study, but well-run
+    associations maintain reserve funds and many governing documents require
+    reserve funding. Best practice is to include reserve fund status in
+    owner communications.
+
+# ---------------------------------------------------------------------------
+# Records / minutes
+# ---------------------------------------------------------------------------
+records:
+  minutes_required: true
+  minutes_notes: >
+    Minutes of unit owner meetings and board meetings must be maintained
+    per Wis. Stat. § 703.165. Minutes of the prior annual meeting are
+    traditionally presented for approval at the next annual meeting.
+  records_available_to_owners: true
+  records_statute: "Wis. Stat. § 703.165"
+
+# ---------------------------------------------------------------------------
+# Governing document hierarchy notes
+# ---------------------------------------------------------------------------
+doc_hierarchy_notes: >
+  In Wisconsin condominium associations, the condominium declaration
+  (master deed) typically controls over the bylaws on matters addressed
+  in both. The bylaws control over rules and regulations. Where the
+  declaration and bylaws are silent, Wisconsin statutory defaults apply.
+  Amendments to the declaration commonly require a supermajority vote of
+  unit owners and mortgagee approval. Bylaw amendments typically require
+  a lower threshold defined in the bylaws themselves. Always review
+  the specific governing documents and consult qualified Wisconsin counsel.
+
+# ---------------------------------------------------------------------------
+# Packet / notice defaults for this jurisdiction
+# ---------------------------------------------------------------------------
+packet_defaults:
+  default_proxy_language: >
+    KNOW ALL PERSONS BY THESE PRESENTS, that the undersigned unit owner(s)
+    of [ASSOCIATION NAME], hereby appoint(s) __________________ (or, if
+    that person is unable to serve, any officer of the Association) as
+    proxy, with full power of substitution, to attend, act, and vote on
+    behalf of the undersigned at the Annual Meeting of Unit Owners to be
+    held on [DATE] at [TIME] at [LOCATION], and at any adjournment thereof,
+    according to the number of votes the undersigned would be entitled to
+    cast if personally present. This proxy is revocable and valid only
+    for the above-referenced meeting and any adjournment thereof.
+  include_org_meeting_note: true
+  org_meeting_note: >
+    Immediately following the Annual Meeting of Unit Owners, the Board
+    of Directors will hold its Organizational Meeting to elect officers
+    for the ensuing year. Unit owners are welcome to observe.

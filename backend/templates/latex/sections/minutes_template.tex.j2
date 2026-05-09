@@ -1,0 +1,136 @@
+%% ════════════════════════════════════════════════════════════════
+%%  DRAFT MINUTES TEMPLATE
+%% ════════════════════════════════════════════════════════════════
+\section{Draft Annual Meeting Minutes Template}
+
+\begin{center}
+{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
+{\large MINUTES OF THE {{ meeting_year }} ANNUAL MEETING OF UNIT OWNERS}\\[6pt]
+{\normalsize\bfseries
+{% if meeting.meeting_date %}{{ meeting.meeting_date | format_date }}{% else %}\fillline{% endif %}
+$\cdot$
+{% if meeting.meeting_time %}{{ meeting.meeting_time }}{% else %}\fillline{% endif %}
+\\[4pt]
+{% if meeting.meeting_location %}{{ meeting.meeting_location | tex_escape }}{% else %}\fillline{% endif %}
+}
+\end{center}
+
+\vspace{0.15in}
+\begin{warningbox}
+\textbf{DRAFT TEMPLATE --- For Recording Secretary Use Only}\\
+This is a structural template for the Annual Meeting minutes. The Recording Secretary should
+complete this document during or immediately after the meeting. Completed minutes should be
+reviewed by counsel if required, then presented for owner approval at the next annual meeting.
+\end{warningbox}
+
+\vspace{0.2in}
+
+\noindent\textbf{1. CALL TO ORDER}
+
+\noindent The Annual Meeting of Unit Owners of {{ association_name | tex_escape }} was called to order
+at \fillline[0.8in] on {{ meeting.meeting_date | format_date if meeting.meeting_date else "\fillline" }}
+by \fillline[2in], who presided as Chair.
+
+\vspace{0.15in}
+\noindent\textbf{2. PROOF OF NOTICE}
+
+\noindent\fillline[2in] reported that written notice of the Annual Meeting was sent to all unit owners
+of record by \fillline[1in] on \fillline[1.5in], which is \fillline[0.5in] days before the meeting,
+satisfying the minimum notice requirement.
+
+\vspace{0.15in}
+\noindent\textbf{3. ESTABLISHMENT OF QUORUM}
+
+\noindent The following unit owners were present:
+
+\begin{itemize}
+\item In person: \fillline[0.5in] votes / units
+\item By proxy: \fillline[0.5in] votes / units
+\item \textbf{Total: \fillline[0.5in] votes / units}
+\end{itemize}
+
+\noindent Quorum
+$\square$ \textbf{was established}
+$\square$ \textbf{was NOT established}.
+{% if meeting.quorum_threshold %}
+(Required: {{ meeting.quorum_threshold }}\% of total votes.){% endif %}
+
+\noindent $\square$ Meeting proceeded normally.
+\noindent $\square$ Meeting was adjourned to \fillline[2.5in] due to lack of quorum.
+
+\vspace{0.15in}
+\noindent\textbf{4. APPROVAL OF AGENDA}
+
+\noindent Motion by \fillline[1.5in], seconded by \fillline[1.5in], to approve the agenda as presented
+(or as modified: \fillline[2in]). Vote: Ayes \fillline[0.4in] $|$ Nays \fillline[0.4in] $|$ Abstain \fillline[0.4in].
+Motion: $\square$ Carried \quad $\square$ Failed.
+
+\vspace{0.15in}
+\noindent\textbf{5. APPROVAL OF PRIOR ANNUAL MEETING MINUTES}
+
+\noindent $\square$ Prior minutes were presented and reviewed.
+Motion by \fillline[1.5in], seconded by \fillline[1.5in], to approve the prior minutes
+(as presented / as corrected: \fillline[2in]).
+Vote: Ayes \fillline[0.4in] $|$ Nays \fillline[0.4in]. Motion: $\square$ Carried \quad $\square$ Failed.
+
+\noindent $\square$ Prior minutes were not available. The Chair announced: \fillline[3in].
+
+{% if election.election_required %}
+\vspace{0.15in}
+\noindent\textbf{6. ELECTION OF DIRECTOR(S)}
+
+\noindent The Chair announced that \fillline[0.4in] board seat(s) are up for election.
+Nominations were opened. The following persons were nominated:
+
+\vspace{0.1in}
+\noindent Nominees: \fillline[4.5in]
+
+\vspace{0.1in}
+\noindent After voting, the following person(s) were elected:
+
+\noindent Director Elected: \fillline[2.5in] \quad Votes Received: \fillline[0.5in]\\
+\noindent Director Elected: \fillline[2.5in] \quad Votes Received: \fillline[0.5in]\\
+
+\noindent All elections noted for the record.
+{% endif %}
+
+\vspace{0.15in}
+\noindent\textbf{{% if election.election_required %}7{% else %}6{% endif %}. FINANCIAL REPORT}
+
+\noindent\fillline[2in] presented the financial report. The report was received and filed
+(or approved: \fillline[2in]).
+
+\noindent Notes: \fillline[4in]
+
+\vspace{0.15in}
+\noindent\textbf{{% if election.election_required %}8{% else %}7{% endif %}. OLD BUSINESS}
+
+\noindent \fillline[5in]
+
+\vspace{0.15in}
+\noindent\textbf{{% if election.election_required %}9{% else %}8{% endif %}. NEW BUSINESS}
+
+\noindent \fillline[5in]
+
+\vspace{0.15in}
+\noindent\textbf{{% if election.election_required %}10{% else %}9{% endif %}. ADJOURNMENT}
+
+\noindent Motion by \fillline[1.5in], seconded by \fillline[1.5in], to adjourn the Annual Meeting.
+Motion carried. The Annual Meeting was adjourned at \fillline[0.8in].
+
+{% if jx.include_org_meeting_note %}
+\vspace{0.15in}
+\noindent\textit{Immediately following adjournment, the Board held its Organizational Meeting.}
+{% endif %}
+
+\vspace{0.5in}
+\noindent\begin{tabular}{@{}p{0.45\linewidth}p{0.05\linewidth}p{0.45\linewidth}@{}}
+\rule{0.45\linewidth}{0.4pt} & & \rule{0.45\linewidth}{0.4pt} \\
+\small Recording Secretary & & \small Date Approved \\
+\end{tabular}
+
+\vspace{0.15in}
+{\small\color{midgray}\textit{
+These minutes were reviewed and approved at the
+\fillline[1.5in] Annual Meeting of Unit Owners held on \fillline[2in].
+}}

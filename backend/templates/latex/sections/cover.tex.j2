@@ -1,0 +1,71 @@
+%% ════════════════════════════════════════════════════════════════
+%%  COVER PAGE
+%% ════════════════════════════════════════════════════════════════
+\begin{titlepage}
+\centering
+\vspace*{1.5in}
+
+{\color{navyblue}\rule{\linewidth}{2pt}}
+
+\vspace{0.3in}
+{\huge\bfseries\color{navyblue} {{ association_name | tex_escape }} }
+
+\vspace{0.15in}
+{\large\color{midgray} {{ association.association_type | upper }} $\cdot$ {{ association.state | upper }} }
+
+\vspace{0.2in}
+{\color{navyblue}\rule{\linewidth}{0.8pt}}
+
+\vspace{0.4in}
+{\LARGE\bfseries {{ meeting_year }} Annual Meeting of Unit Owners}
+
+\vspace{0.25in}
+
+{% if meeting.meeting_date %}
+{\large\bfseries {{ meeting.meeting_date | format_date }}}\\[6pt]
+{% else %}
+{\large\bfseries Date: \fillline[1.5in]}\\[6pt]
+{% endif %}
+
+{% if meeting.meeting_time %}
+{\large {{ meeting.meeting_time }}}\\[6pt]
+{% else %}
+{\large Time: \fillline[1.5in]}\\[6pt]
+{% endif %}
+
+{% if meeting.meeting_location %}
+\vspace{0.1in}
+{\large\itshape {{ meeting.meeting_location | tex_escape }}}\\
+{% if meeting.meeting_address %}
+{\normalsize {{ meeting.meeting_address | tex_escape }}}\\
+{% endif %}
+{% else %}
+{\large Location: \fillline[2.5in]}\\
+{% endif %}
+
+\vspace{0.5in}
+{\color{navyblue}\rule{\linewidth}{0.4pt}}
+
+\vspace{0.3in}
+{\normalsize\color{midgray}
+This packet is prepared for the exclusive use of unit owners and
+the Board of Directors of {{ association_name | tex_escape }}.
+It contains confidential association records.
+}
+
+\vspace{0.4in}
+
+{% if management_company %}
+{\small\color{midgray}
+Prepared by:\\
+\textbf{ {{ management_company | tex_escape }} }\\
+{% if management_contact %}{{ management_contact | tex_escape }}\\{% endif %}
+{% if management_email %}{{ management_email | tex_escape }}\\{% endif %}
+{% if management_phone %}{{ management_phone | tex_escape }}{% endif %}
+}
+{% endif %}
+
+\vfill
+{\small\color{rulecolor} Generated: {{ generated_date }} $\cdot$ HOA Annual Meeting Packet Generator}
+
+\end{titlepage}

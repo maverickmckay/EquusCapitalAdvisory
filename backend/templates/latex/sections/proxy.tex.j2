@@ -1,0 +1,129 @@
+%% ════════════════════════════════════════════════════════════════
+%%  PROXY FORM
+%% ════════════════════════════════════════════════════════════════
+\section{Proxy Form}
+
+\begin{center}
+{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
+{\large PROXY FOR ANNUAL MEETING OF UNIT OWNERS}\\[4pt]
+{\normalsize {{ meeting_year }} Annual Meeting}
+{% if meeting.meeting_date %}
+$\cdot$ {{ meeting.meeting_date | format_date }}
+{% endif %}
+\end{center}
+
+\vspace{0.25in}
+
+{% if jx.default_proxy_language and not custom_proxy_language %}
+\noindent {{ jx.default_proxy_language
+    | replace("[ASSOCIATION NAME]", association_name)
+    | replace("[DATE]", meeting.meeting_date | format_date if meeting.meeting_date else "________________")
+    | replace("[TIME]", meeting.meeting_time if meeting.meeting_time else "________________")
+    | replace("[LOCATION]", meeting.meeting_location if meeting.meeting_location else "________________")
+    | tex_escape }}
+{% else %}
+
+%% Custom or derived proxy language
+\noindent KNOW ALL PERSONS BY THESE PRESENTS, that the undersigned unit owner(s) of
+\textbf{ {{ association_name | tex_escape }} } (the ``Association''), hereby appoint(s)
+
+\vspace{0.15in}
+\noindent \rule{3.5in}{0.4pt}\\
+\noindent\small (Name of Proxy Holder --- must be a unit owner or designated representative)
+
+\vspace{0.2in}
+
+\noindent or, if that person is unable or unwilling to serve, \rule{2.5in}{0.4pt}, as proxy,
+with full power of substitution, to attend, act, and vote as the proxy holder sees fit (or as
+directed below) on behalf of the undersigned at the \textbf{{{ meeting_year }} Annual Meeting of Unit Owners}
+to be held on
+\textbf{
+{% if meeting.meeting_date %} {{ meeting.meeting_date | format_date }} {% else %}\rule{1.2in}{0.4pt}{% endif %}
+}
+at
+\textbf{
+{% if meeting.meeting_time %} {{ meeting.meeting_time }} {% else %}\rule{0.8in}{0.4pt}{% endif %}
+},
+at
+\textbf{
+{% if meeting.meeting_location %} {{ meeting.meeting_location | tex_escape }} {% else %}\rule{2in}{0.4pt}{% endif %}
+},
+and at any adjournment thereof, according to the number of votes the undersigned would be entitled to cast
+if personally present.
+
+\vspace{0.15in}
+\noindent \textbf{This proxy is revocable and valid only for the above-referenced meeting and any adjournment thereof.}
+
+{% endif %}
+
+{% if election.election_required %}
+\vspace{0.25in}
+\subsection*{Election of Director(s)}
+
+At the Annual Meeting, unit owners will elect director(s) to the Board.
+
+\vspace{0.1in}
+\noindent\textbf{The proxy holder is authorized to vote:}
+
+\vspace{0.1in}
+\begin{tabular}{@{}lp{4in}@{}}
+$\square$ & \textbf{As the proxy holder sees fit} (if no specific direction is given below)\\[8pt]
+$\square$ & \textbf{As specifically directed} (mark candidate preference below):\\
+\end{tabular}
+
+{% if election.candidate_bios %}
+\vspace{0.15in}
+\noindent\textit{Please mark your candidate preference (vote for up to {{ election.seats_up_count or 1 }} candidate(s)):}
+
+\vspace{0.1in}
+{% for candidate in election.candidate_bios %}
+\begin{tabular}{@{}lp{5in}@{}}
+$\square$ & \textbf{ {{ candidate.name | tex_escape }} }
+{% if candidate.incumbent %} (Incumbent) {% endif %}
+{% if candidate.unit_number %} --- Unit {{ candidate.unit_number | tex_escape }}{% endif %}
+\\
+\end{tabular}
+{% endfor %}
+{% else %}
+\vspace{0.1in}
+\noindent\textit{Candidate(s) will be identified prior to the meeting. If candidates are known, their names will be listed here.}
+{% endif %}
+{% endif %}
+
+\vspace{0.4in}
+\subsection*{Execution}
+
+\noindent Signed this \fillline[0.5in] day of \fillline[1in], {{ meeting_year }}.
+
+\vspace{0.5in}
+
+\noindent\begin{tabular}{@{}p{0.45\linewidth}p{0.05\linewidth}p{0.45\linewidth}@{}}
+\rule{0.45\linewidth}{0.4pt} & & \rule{0.45\linewidth}{0.4pt} \\
+\small Signature of Unit Owner & & \small Signature of Co-Owner (if applicable) \\[10pt]
+\rule{0.45\linewidth}{0.4pt} & & \rule{0.45\linewidth}{0.4pt} \\
+\small Printed Name & & \small Printed Name \\[10pt]
+\rule{0.45\linewidth}{0.4pt} & & \\
+\small Unit Number & & \\
+\end{tabular}
+
+\vspace{0.3in}
+
+\begin{notebox}
+\textbf{Instructions:}
+\begin{itemize}[noitemsep]
+\item Each unit is entitled to one (1) vote.
+\item This proxy must be signed by the owner(s) of record.
+\item Return completed proxy to:
+{% if management_contact %}
+\textbf{ {{ management_contact | tex_escape }} }
+{% if management_email %} at {{ management_email | tex_escape }}{% endif %}
+{% else %}
+\fillline[2in]
+{% endif %}
+{% if meeting.proxy_deadline %}
+\item \textbf{Deadline: Proxies must be received by {{ meeting.proxy_deadline | format_date }}.}
+{% endif %}
+\item You may attend the meeting in person even if you have submitted a proxy. Personal attendance revokes the proxy.
+\item This proxy is valid only for the {{ meeting_year }} Annual Meeting and any adjournment thereof.
+\end{itemize}
+\end{notebox}

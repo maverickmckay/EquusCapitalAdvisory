@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  hoa-packet-generator:
+    build: .
+    container_name: hoa-packet-generator
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist projects directory outside the container
+      - ./projects:/app/projects
+      # Mount sample data for easy access
+      - ./sample_data:/app/sample_data
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+# To run:
+#   docker-compose up --build
+#   Open http://localhost:8000

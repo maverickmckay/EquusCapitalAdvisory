@@ -1,0 +1,74 @@
+# Illinois Jurisdiction Rules
+# HOA Annual Meeting Packet Generator
+#
+# IMPORTANT LEGAL DISCLAIMER:
+#   This file is a structural scaffold. Content must be reviewed and
+#   verified by qualified Illinois counsel. Do NOT rely on this file
+#   for legal advice or compliance decisions.
+#
+# Primary statutes:
+#   - Illinois Condominium Property Act: 765 ILCS 605
+#   - Illinois Common Interest Community Association Act: 765 ILCS 160
+#   - Illinois General Not For Profit Corporation Act: 805 ILCS 105
+
+state: IL
+state_name: Illinois
+display_name: Illinois (Condominium / CICA)
+primary_statutes:
+  - citation: "765 ILCS 605"
+    description: "Illinois Condominium Property Act"
+  - citation: "765 ILCS 160"
+    description: "Illinois Common Interest Community Association Act"
+  - citation: "805 ILCS 105"
+    description: "Illinois General Not For Profit Corporation Act"
+
+meetings:
+  annual_meeting_required: true
+  default_notice_period_days: 10
+  default_notice_period_max_days: 30
+  notice_notes: >
+    Illinois Condominium Property Act requires notice of unit owner
+    meetings. Confirm notice requirements with association's bylaws
+    and applicable statute. Illinois law has specific provisions for
+    electronic notice in certain circumstances.
+  quorum_notes: >
+    Quorum is set by the governing documents. Illinois condo associations
+    commonly use 20% or more of unit owners entitled to vote. Confirm
+    with governing documents.
+  remote_meeting_permitted: true
+  remote_meeting_notes: >
+    Illinois law has been amended to permit remote meeting participation.
+    Confirm with current statute and governing documents.
+
+proxy:
+  proxy_permitted: true
+  proxy_notes: >
+    Proxy voting is generally permitted for Illinois associations.
+    Confirm proxy rules with governing documents. Illinois law has
+    specific provisions limiting certain proxy uses in condominium elections.
+
+elections:
+  election_notes: >
+    Director elections in Illinois condominiums are subject to the
+    Condominium Property Act election provisions. Illinois has specific
+    requirements regarding election procedures. Confirm with governing
+    documents and current statute.
+
+financial_reporting:
+  annual_report_notes: >
+    Illinois Condominium Property Act requires annual financial disclosure
+    to unit owners. Confirm specific requirements with statute and
+    governing documents. Illinois associations may have audit or review
+    requirements depending on size.
+
+records:
+  minutes_required: true
+  records_statute: "765 ILCS 605/19"
+
+packet_defaults:
+  include_org_meeting_note: true
+
+doc_hierarchy_notes: >
+  Illinois condominiums are primarily governed by the Condominium Property
+  Act. The declaration and bylaws control within statutory limits.
+  Confirm governing document hierarchy with qualified Illinois counsel.
