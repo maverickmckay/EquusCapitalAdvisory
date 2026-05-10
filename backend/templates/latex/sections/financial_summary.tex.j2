@@ -1,161 +1,169 @@
-%% ════════════════════════════════════════════════════════════════
-%%  FINANCIAL SUMMARY
-%% ════════════════════════════════════════════════════════════════
-\section{Financial Summary}
+%% BUDGET SUMMARIES
+\section{Budget Summaries}
 
-\begin{center}
-{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
-{\large {{ meeting_year }} Annual Meeting --- Financial Overview}
-\end{center}
+This section summarizes the approved budget for {{ association_name | tex_escape }}
+{% if financial.approved_budget_year %}for fiscal year {{ financial.approved_budget_year }}{% endif %},
+based on association financial records provided for this packet.
 
-\vspace{0.1in}
-{\small\color{midgray}\textit{
-Financial information presented herein is derived from association records.
-Owners should review the full financial statements for complete information.
-}}
-
-%% ── Approved Budget ──────────────────────────────────────────────
 {% if financial.approved_budget_total or financial.key_budget_line_items %}
-\vspace{0.2in}
-\subsection*{Approved Operating Budget --- {{ financial.approved_budget_year or meeting_year }}}
 
-{% if financial.approved_budget_total %}
-\begin{notebox}
-\textbf{Total Approved Operating Budget: \${{ financial.approved_budget_total | format_currency }}}
-{% if financial.prior_budget_total %}\\
-Prior Year Budget: \${{ financial.prior_budget_total | format_currency }}
-\hfill
-Change: \${{ (financial.approved_budget_total - financial.prior_budget_total) | format_currency }}
-({{ ((financial.approved_budget_total - financial.prior_budget_total) / financial.prior_budget_total * 100) | round(1) }}\%)
-{% endif %}
-\end{notebox}
-{% endif %}
+\subsection{Operating Budget Summary}
+
+\subsubsection*{Approved Operating Budget ---
+{{ financial.approved_budget_year or meeting_year }}}
+\vspace{-0.6em}
 
 {% if financial.key_budget_line_items %}
-\vspace{0.1in}
-\noindent\begin{longtable}{@{}p{4in}r@{}}
+\begin{center}
+\begin{tabular}{@{}l{% if financial.prior_budget_total %}r{% endif %}r@{}}
 \toprule
-\textbf{Budget Category} & \textbf{Amount} \\
+\textbf{Budget Category} &
+{% if financial.prior_budget_total %}\textbf{ {{ (meeting_year - 1) }} Budget} &{% endif %}
+\textbf{ {{ financial.approved_budget_year or meeting_year }} Budget} \\
 \midrule
-\endhead
 {% for category, amount in financial.key_budget_line_items.items() %}
-{{ category | tex_escape }} & \${{ amount | format_currency }} \\
+{{ category | tex_escape }} &
+{% if financial.prior_budget_total %}--- &{% endif %}
+\money{ {{ amount | format_currency }} } \\
 {% endfor %}
 \midrule
 {% if financial.approved_budget_total %}
-\textbf{Total} & \textbf{\${{ financial.approved_budget_total | format_currency }}} \\
+{% if financial.prior_budget_total %}
+\strong{Total Approved Budget} & \money{ {{ financial.prior_budget_total | format_currency }} } & \money{ {{ financial.approved_budget_total | format_currency }} } \\
+{% else %}
+\strong{Total Approved Budget} & \money{ {{ financial.approved_budget_total | format_currency }} } \\
+{% endif %}
 {% endif %}
 \bottomrule
-\end{longtable}
+\end{tabular}
+\end{center}
+{% else %}
+\begin{center}
+\begin{tabular}{@{}l{% if financial.prior_budget_total %}r{% endif %}r@{}}
+\toprule
+{% if financial.prior_budget_total %}
+\textbf{Item} & \textbf{ {{ (meeting_year - 1) }} Budget} & \textbf{ {{ financial.approved_budget_year or meeting_year }} Budget} \\
+{% else %}
+\textbf{Item} & \textbf{Amount} \\
+{% endif %}
+\midrule
+{% if financial.prior_budget_total %}
+Total Operating Budget &
+\money{ {{ financial.prior_budget_total | format_currency }} } &
+\money{ {{ financial.approved_budget_total | format_currency }} } \\
+{% else %}
+Total Approved Operating Budget & \money{ {{ financial.approved_budget_total | format_currency }} } \\
+{% endif %}
+\bottomrule
+\end{tabular}
+\end{center}
 {% endif %}
 
 {% if financial.approved_budget_notes %}
-\vspace{0.1in}
+\vspace{0.5em}
 \noindent\textit{ {{ financial.approved_budget_notes | tex_escape }} }
 {% endif %}
+
+{% else %}
+\noindent\textit{Approved budget figures have not been provided for this packet.
+Owners may request copies from management.}
 {% endif %}
 
-%% ── Prior Year Financials ─────────────────────────────────────────
-{% if financial.prior_year_end_income or financial.prior_year_end_expenses or financial.prior_year_end_net %}
-\vspace{0.2in}
-\subsection*{Prior Year Financial Summary --- {{ (meeting_year - 1) }}}
+{% if financial.reserve_fund_balance or financial.reserve_percent_funded %}
+\subsection{Capital and Reserve Notes}
 
-\begin{center}
-\begin{tabular}{@{}p{3in}r@{}}
-\toprule
-\textbf{Item} & \textbf{Amount} \\
-\midrule
-{% if financial.prior_year_end_income %}
-Total Income & \${{ financial.prior_year_end_income | format_currency }} \\
-{% endif %}
-{% if financial.prior_year_end_expenses %}
-Total Expenses & \${{ financial.prior_year_end_expenses | format_currency }} \\
-{% endif %}
-{% if financial.prior_year_end_net %}
-\midrule
-\textbf{Net Income / (Deficit)} & \textbf{\${{ financial.prior_year_end_net | format_currency }}} \\
-{% endif %}
-\bottomrule
-\end{tabular}
-\end{center}
-
-{% if financial.key_financial_notes %}
-\vspace{0.1in}
-\begin{itemize}[noitemsep]
-{% for note in financial.key_financial_notes %}
-\item {{ note | tex_escape }}
-{% endfor %}
+\noindent The Association maintains a reserve fund for long-term capital replacements.
+\begin{itemize}[leftmargin=1.1em]
+    {% if financial.reserve_fund_balance %}
+    \item Reserve Fund Balance: \money{ {{ financial.reserve_fund_balance | format_currency }} }
+    {% endif %}
+    {% if financial.reserve_percent_funded %}
+    \item Percent Funded: {{ financial.reserve_percent_funded | round(1) }}\%
+    {% endif %}
+    {% if financial.reserve_study_year %}
+    \item Based on reserve study completed in {{ financial.reserve_study_year }}
+    {% endif %}
+    {% if jx.reserve_fund_notes %}
+    \item \textit{ {{ jx.reserve_fund_notes | tex_escape }} }
+    {% endif %}
 \end{itemize}
 {% endif %}
-{% else %}
-\begin{warningbox}
-\textbf{Prior Year Financial Statements Not Available.}
-A complete prior year financial report was not included in this packet.
-{% if jx.annual_report_notes %}
-\textit{Note: {{ jx.annual_report_notes | tex_escape }}}
-{% endif %}
-Owners may request copies of financial statements from management.
-\end{warningbox}
+
+\newpage
+
+%% FINANCIAL STATEMENTS
+\section{Financial Statements}
+
+This section provides a summary of the Association's financial statements based on records
+provided for this packet.
+
+%% Prior Year
+{% if financial.prior_year_end_income or financial.prior_year_end_expenses or financial.prior_year_end_net %}
+\subsection{ {{ (meeting_year - 1) }} Year-End Summary}
+
+{% if financial.prior_year_end_income or financial.prior_year_end_expenses %}
+\subsubsection*{Income Statement for {{ (meeting_year - 1) }}}
+\vspace{-0.6em}
+
+\begin{itemize}[leftmargin=1.1em]
+    {% if financial.prior_year_end_income %}
+    \item Total Income: \money{ {{ financial.prior_year_end_income | format_currency }} }
+    {% if financial.prior_budget_total %}(budget: \money{ {{ financial.prior_budget_total | format_currency }} }){% endif %}
+    {% endif %}
+    {% if financial.prior_year_end_expenses %}
+    \item Total Expenses: \money{ {{ financial.prior_year_end_expenses | format_currency }} }
+    {% endif %}
+    {% if financial.prior_year_end_net %}
+    \item \strong{Net Income: \money{ {{ financial.prior_year_end_net | format_currency }} }}
+    {% endif %}
+    {% for note in financial.key_financial_notes %}
+    \item {{ note | tex_escape }}
+    {% endfor %}
+\end{itemize}
 {% endif %}
 
-%% ── YTD Financials ────────────────────────────────────────────────
-{% if financial.ytd_income or financial.ytd_expenses %}
-\vspace{0.2in}
-\subsection*{Year-to-Date Financials
-{% if financial.ytd_as_of_date %} (as of {{ financial.ytd_as_of_date | format_date }}){% endif %}
-}
-
-\begin{center}
-\begin{tabular}{@{}p{3in}r@{}}
-\toprule
-\textbf{Item} & \textbf{Amount} \\
-\midrule
-{% if financial.ytd_income %}
-YTD Income & \${{ financial.ytd_income | format_currency }} \\
-{% endif %}
-{% if financial.ytd_expenses %}
-YTD Expenses & \${{ financial.ytd_expenses | format_currency }} \\
-{% endif %}
-{% if financial.ytd_income and financial.ytd_expenses %}
-\midrule
-\textbf{YTD Net} & \textbf{\${{ (financial.ytd_income - financial.ytd_expenses) | format_currency }}} \\
-{% endif %}
-\bottomrule
-\end{tabular}
-\end{center}
-{% endif %}
-
-%% ── Reserve Fund ──────────────────────────────────────────────────
-{% if financial.reserve_fund_balance or financial.reserve_percent_funded %}
-\vspace{0.2in}
-\subsection*{Reserve Fund Status}
-
-\begin{notebox}
-{% if financial.reserve_fund_balance %}
-\textbf{Reserve Fund Balance: \${{ financial.reserve_fund_balance | format_currency }}}
-{% endif %}
-{% if financial.reserve_percent_funded %}
-\\[4pt] Percent Funded: \textbf{{{ financial.reserve_percent_funded | round(1) }}\%}
-{% endif %}
-{% if financial.reserve_study_year %}
-\\[4pt]\small\textit{Based on reserve study completed in {{ financial.reserve_study_year }}.}
-{% endif %}
-{% if jx.reserve_fund_notes %}
-\\[6pt]\small\color{midgray}\textit{ {{ jx.reserve_fund_notes | tex_escape }} }
-{% endif %}
-\end{notebox}
-{% endif %}
-
-%% ── Audit ─────────────────────────────────────────────────────────
 {% if financial.audit_completed %}
-\vspace{0.15in}
-\noindent\textbf{Annual Audit / Review:}
+\noindent
 An independent
 {% if financial.audit_year %}{{ financial.audit_year }}{% endif %}
-audit or review report has been prepared for the Association. Copies are available from management upon request.
+audit or review report has been prepared for the Association.
+Copies are available from management upon request.
+{% endif %}
+
+{% else %}
+\noindent\textit{Prior year financial statements have not been provided for this packet.}
+
+{% if jx.annual_financial_report_required %}
+\vspace{0.5em}
+\noindent\textit{Note: {{ jx.annual_report_notes | tex_escape if jx.annual_report_notes else "The governing documents require an annual financial report be furnished to owners. Owners may request copies from management." }}
+}
+{% endif %}
+{% endif %}
+
+%% Year-to-Date
+{% if financial.ytd_income or financial.ytd_expenses %}
+\subsection{ {{ meeting_year }} Year-to-Date Highlights
+{% if financial.ytd_as_of_date %}(Through {{ financial.ytd_as_of_date | format_date }}){% endif %}
+}
+
+\subsubsection*{Income Statement (Year-to-Date
+{% if financial.ytd_as_of_date %}through {{ financial.ytd_as_of_date | format_date }}{% endif %})}
+\vspace{-0.6em}
+
+\begin{itemize}[leftmargin=1.1em]
+    {% if financial.ytd_income %}
+    \item Year-to-Date Income: \money{ {{ financial.ytd_income | format_currency }} }
+    {% endif %}
+    {% if financial.ytd_expenses %}
+    \item Year-to-Date Expenses: \money{ {{ financial.ytd_expenses | format_currency }} }
+    {% endif %}
+    {% if financial.ytd_income and financial.ytd_expenses %}
+    \item \strong{Year-to-Date Net Income: \money{ {{ (financial.ytd_income - financial.ytd_expenses) | format_currency }} }}
+    {% endif %}
+\end{itemize}
 {% endif %}
 
 {% if financial.financial_source_docs %}
-\vspace{0.15in}
-{\small\color{midgray}\textit{Financial data sourced from: {{ financial.financial_source_docs | join("; ") | tex_escape }}.}}
+\vspace{0.5em}
+\noindent\textit{\small Financial data sourced from: {{ financial.financial_source_docs | join("; ") | tex_escape }}.}
 {% endif %}

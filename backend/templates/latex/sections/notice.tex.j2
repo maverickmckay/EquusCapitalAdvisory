@@ -1,156 +1,79 @@
-%% ════════════════════════════════════════════════════════════════
-%%  OFFICIAL ANNUAL MEETING NOTICE
-%% ════════════════════════════════════════════════════════════════
-\section{Official Annual Meeting Notice}
+%% OFFICIAL ANNUAL MEETING NOTICE
+\section{Notice of {{ meeting_year }} Annual Meeting}
 
-\begin{notebox}
-\textbf{NOTICE OF ANNUAL MEETING OF UNIT OWNERS}\\
-\textbf{ {{ association_name | tex_escape }} }
-\end{notebox}
+\subsection*{Official Notice}
+\vspace{-0.5em}
 
-\vspace{0.15in}
+\noindent
+\textbf{ {{ association_name | upper | tex_escape }} }\\[0.5em]
+\textbf{Notice of {{ meeting_year }} Annual Meeting of the Members}
 
-{% if meeting.notice_date %}
-\noindent Date of Notice: \textbf{ {{ meeting.notice_date | format_date }} }
+\vspace{0.75em}
+
+\noindent
+NOTICE IS HEREBY GIVEN that the {{ meeting_year }} Annual Meeting of the Members of
+{{ association_name | tex_escape }} will be held on:
+
+\begin{itemize}[leftmargin=1.1em]
+    \item \strong{Date:}
+          {% if meeting.meeting_date %}{{ meeting.meeting_date | format_date }}
+          {% else %}\fillline{% endif %}
+    \item \strong{Time:}
+          {% if meeting.meeting_time %}{{ meeting.meeting_time }}
+          {% if meeting.registration_time %} (registration begins at {{ meeting.registration_time }}){% endif %}
+          {% else %}\fillline[1.5in]{% endif %}
+    \item \strong{Place:}
+          {% if meeting.meeting_location %}{{ meeting.meeting_location | tex_escape }}
+          {% if meeting.meeting_address %}, {{ meeting.meeting_address | tex_escape }}{% endif %}
+          {% else %}\fillline[2.5in]{% endif %}
+\end{itemize}
+
+Please see the enclosed information regarding the {{ meeting_year }} {{ association_name | tex_escape }} Annual Meeting.
+
+If any owner has questions or concerns they would like to discuss with the Board during the meeting,
+please submit those questions by email prior to the meeting. Questions not submitted in advance may
+not be discussed due to time and agenda constraints.
+
+\begin{itemize}[leftmargin=1.1em]
+    \item \strong{Property Manager{% if management_email %} Email{% endif %}:}
+          {% if management_email %}\texttt{ {{ management_email | tex_escape }} }
+          {% elif management_contact %}{{ management_contact | tex_escape }}
+          {% else %}\fillline{% endif %}
+\end{itemize}
+
+As important business will be conducted at this meeting, it is important for all owners to attend
+the meeting in person or be represented by proxy in order to help establish a quorum.
+{% if meeting.proxy_permitted != false %}
+If you are unable to attend, please complete and return the enclosed Proxy
+{% if meeting.proxy_deadline %}
+by
+{% if meeting.meeting_time %}5{:}00 p.m. on {% endif %}
+{{ meeting.proxy_deadline | format_date }}
+{% endif %}.
+You may
+{% if management_email %}
+scan and email your proxy to the property manager at the address above or give it to another owner
+who will attend the meeting.
 {% else %}
-\noindent Date of Notice: \fillline
-{% endif %}
-
-\vspace{0.1in}
-
-\noindent To: All Unit Owners of Record
-
-\vspace{0.15in}
-
-\noindent You are hereby notified that the \textbf{{{ meeting_year }} Annual Meeting of Unit Owners} of {{ association_name | tex_escape }} will be held as follows:
-
-\vspace{0.15in}
-
-\begin{center}
-\begin{tabular}{@{}p{1.5in}p{4in}@{}}
-\toprule
-\textbf{Date:} &
-{% if meeting.meeting_date %}
-\textbf{ {{ meeting.meeting_date | format_date }} }
-{% else %}
-\fillline
-{% endif %} \\[4pt]
-
-\textbf{Time:} &
-{% if meeting.meeting_time %}
-{{ meeting.meeting_time }}
-{% else %}
-\fillline
-{% endif %} \\[4pt]
-
-{% if meeting.registration_time %}
-\textbf{Registration Opens:} & {{ meeting.registration_time }} \\[4pt]
-{% endif %}
-
-\textbf{Location:} &
-{% if meeting.meeting_location %}
-{{ meeting.meeting_location | tex_escape }}
-{% if meeting.meeting_address %}\\& {{ meeting.meeting_address | tex_escape }}{% endif %}
-{% else %}
-\fillline
-{% endif %} \\[4pt]
-
-{% if meeting.virtual_option %}
-\textbf{Virtual Access:} &
-{% if meeting.virtual_link %}
-{{ meeting.virtual_link | tex_escape }}
-{% else %}
-Details will be distributed separately.
-{% endif %} \\[4pt]
-{% endif %}
-
-\bottomrule
-\end{tabular}
-\end{center}
-
-\vspace{0.2in}
-
-\subsection*{Business to Be Conducted}
-
-The following items of business will be considered at the Annual Meeting:
-
-\begin{enumerate}[leftmargin=*, label=\arabic*.]
-{% for item in meeting.agenda_items %}
-\item {{ item.title | tex_escape }}
-  {% if item.description %}\\\textit{\small {{ item.description | tex_escape }}}{% endif %}
-{% endfor %}
-{% if not meeting.agenda_items %}
-\item Call to Order and Establishment of Quorum
-\item Proof of Notice
-\item Approval of Agenda
-\item Approval of Prior Annual Meeting Minutes
-{% if election.election_required %}\item Election of Director(s){% endif %}
-\item Financial Report
-\item Old Business
-\item New Business
-\item Adjournment
-{% if jx.include_org_meeting_note %}\item[] \textit{(Immediately following: Organizational Meeting of the Board of Directors)}{% endif %}
-{% endif %}
-\end{enumerate}
-
-{% if meeting.quorum_threshold %}
-\vspace{0.15in}
-\subsection*{Quorum Requirement}
-
-A quorum for the transaction of business requires the presence, in person or by proxy, of unit owners entitled to cast
-\textbf{ {{ meeting.quorum_threshold }}{\%} } of the total votes of the association.
-{% if meeting.adjournment_rules %}
-If a quorum is not present, the meeting will be adjourned as follows: {{ meeting.adjournment_rules | tex_escape }}
+give your completed proxy to another owner who will attend the meeting.
 {% endif %}
 {% endif %}
 
-{% if meeting.proxy_permitted %}
-\vspace{0.15in}
-\subsection*{Proxy Voting}
+\vspace{1.5em}
 
-Unit owners who are unable to attend in person may vote by proxy. A proxy form is enclosed with this notice.
-Proxies must be signed by the unit owner(s) of record.
-{% if meeting.proxy_deadline %}Completed proxies must be received no later than \textbf{ {{ meeting.proxy_deadline | format_date }} }.{% endif %}
-Please direct completed proxies to:
-{% if management_contact %}{{ management_contact | tex_escape }}{% else %}\fillline{% endif %}.
+\noindent
+On behalf of the Board of Directors of\\
+\textbf{ {{ association_name | tex_escape }} }\\[1em]
+\textbf{By:} \rule{2.5in}{0.4pt}\\[-0.2em]
+{% if management_contact %}
+\emph{ {{ management_contact | tex_escape }} }\\
 {% endif %}
-
-{% if election.election_required %}
-\vspace{0.15in}
-\subsection*{Board of Directors Election}
-
-At this Annual Meeting, unit owners will elect
-\textbf{
-{% if election.seats_up_count %}{{ election.seats_up_count }} director(s){% else %}director(s){% endif %}
-}
-to the Board of Directors.
-{% if election.director_term_length_years %}Each director elected at this meeting will serve a \textbf{{{ election.director_term_length_years }}-year term}.{% endif %}
-A candidate nomination form and biographical sketch template are included in this packet.
-{% endif %}
-
-\vspace{0.3in}
-
-\noindent On behalf of the Board of Directors,
-
-\vspace{0.5in}
-
-\noindent \rule{3in}{0.4pt} \hfill \rule{1.5in}{0.4pt}\\
-\noindent Secretary, Board of Directors \hfill Date
-
 {% if management_company %}
-\vspace{0.2in}
-\noindent\small\textit{Notice prepared by {{ management_company | tex_escape }} on behalf of the Association.}
+{{ management_company | tex_escape }}
 {% endif %}
 
-{% if notice_compliance_note %}
-\vspace{0.15in}
-\begin{notebox}
-\textbf{Notice Period:} This notice is being sent
-{% if meeting.notice_date and meeting.meeting_date %}
-{{ (meeting.meeting_date - meeting.notice_date).days }} days
-{% else %}
-at least the required number of days
-{% endif %}
-before the meeting, satisfying the minimum notice requirement.
-\end{notebox}
+{% if notice_compliance_note and meeting.notice_date and meeting.meeting_date %}
+\vspace{1em}
+\noindent\textit{\small Notice period: This notice is sent {{ (meeting.meeting_date - meeting.notice_date).days }} days before the meeting,
+satisfying the applicable minimum notice requirement.}
 {% endif %}

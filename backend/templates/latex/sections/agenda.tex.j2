@@ -1,78 +1,100 @@
-%% ════════════════════════════════════════════════════════════════
-%%  ANNUAL MEETING AGENDA
-%% ════════════════════════════════════════════════════════════════
-\section{Annual Meeting Agenda}
+%% ANNUAL MEETING AGENDA
+\section{ {{ meeting_year }} Annual Meeting Agenda}
 
-\begin{center}
-{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
-{\large {{ meeting_year }} Annual Meeting of Unit Owners}\\[4pt]
+\subsection*{Annual Meeting Agenda}
+\vspace{-0.6em}
+
+\noindent
+\textbf{ {{ association_name | tex_escape }} }\\
+\textbf{ {{ meeting_year }} Annual Meeting Agenda}\\
 {% if meeting.meeting_date %}
-{\normalsize {{ meeting.meeting_date | format_date }}
-{% if meeting.meeting_time %} $\cdot$ {{ meeting.meeting_time }}{% endif %}
-{% if meeting.meeting_location %} $\cdot$ {{ meeting.meeting_location | tex_escape }}{% endif %}
+\textbf{
+{{ meeting.meeting_date | format_date }}
+{% if meeting.meeting_time %} --- {{ meeting.meeting_time }}{% endif %}
 }
 {% endif %}
-\end{center}
 
-\vspace{0.2in}
+\vspace{0.5em}
 
-\noindent\begin{tabular}{@{}p{0.4in}p{1.2in}p{4.1in}@{}}
-\toprule
-\textbf{\#} & \textbf{Time} & \textbf{Item} \\
-\midrule
+\begin{enumerate}[leftmargin=1.4em]
+    \item \strong{Call to Order and Confirmation of Quorum}
+    \begin{itemize}[leftmargin=1.1em]
+        \item Roll call of units present and proxies represented
+        \item Confirmation that quorum is satisfied
+        {% if meeting.quorum_threshold %}
+        \item Required quorum: {{ meeting.quorum_threshold }}\% of eligible votes, in person or by proxy
+        {% endif %}
+    \end{itemize}
 
-{% set ns = namespace(counter=1) %}
-{% macro aitem(title, subnote="", time="") %}
-{{ ns.counter }}. & {{ time }} & {{ title | tex_escape }}
-{% if subnote %}\\ & & \small\textit{ {{ subnote | tex_escape }} }{% endif %} \\[4pt]
-{% set ns.counter = ns.counter + 1 %}
-{% endmacro %}
+    \item \strong{Approval or Discussion of Prior Annual Meeting Minutes}
+    \begin{itemize}[leftmargin=1.1em]
+        \item If {{ (meeting_year - 1) }} minutes are available: owner motion to approve
+        \item If minutes reflect no quorum or limited business: brief explanation and record in {{ meeting_year }} minutes
+    \end{itemize}
 
-{{ aitem("Call to Order") }}
-{{ aitem("Establishment of Quorum") }}
-{{ aitem("Proof of Notice") }}
-{{ aitem("Approval of Agenda") }}
-{{ aitem("Approval of Prior Annual Meeting Minutes",
-         "Prior minutes are presented for approval, or status reported if unavailable.") }}
+    \item \strong{Introduction of Board of Directors and Property Manager}
 
-{% if election.election_required %}
-{{ aitem("Report of Nominations / Candidate Introductions") }}
-{{ aitem("Election of Director(s)",
-         "Owners will elect " ~ (election.seats_up_count | string if election.seats_up_count else "one or more") ~ " director(s) to the Board.") }}
+    \item \strong{Review of Financials}
+    \begin{itemize}[leftmargin=1.1em]
+        {% if financial.prior_year_end_income or financial.prior_year_end_net %}
+        \item {{ (meeting_year - 1) }} year-end results
+        {% endif %}
+        {% if financial.ytd_income or financial.ytd_expenses %}
+        \item {{ meeting_year }} year-to-date financial performance
+        {% if financial.ytd_as_of_date %}(through {{ financial.ytd_as_of_date | format_date }}){% endif %}
+        {% endif %}
+        {% if financial.reserve_fund_balance %}
+        \item Overview of reserves
+        {% if financial.reserve_fund_balance %} --- current balance: \money{ {{ financial.reserve_fund_balance | format_currency }} }{% endif %}
+        {% endif %}
+        \item Capital spending and any special assessment history
+    \end{itemize}
+
+    \item \strong{Presentation of Approved Budget}
+    \begin{itemize}[leftmargin=1.1em]
+        {% if financial.prior_budget_total %}
+        \item {{ (meeting_year - 1) }} Approved Budget
+        {% endif %}
+        \item {{ financial.approved_budget_year or meeting_year }} Approved Budget
+        {% if financial.approved_budget_total %}
+        (total: \money{ {{ financial.approved_budget_total | format_currency }} })
+        {% endif %}
+    \end{itemize}
+
+    \item \strong{New Business}
+    \begin{itemize}[leftmargin=1.1em]
+        \item Maintenance, capital projects, insurance, and risk management updates
+        \item Any proposed actions requiring owner votes (if applicable)
+        {% for item in meeting.special_agenda_items %}
+        \item {{ item | tex_escape }}
+        {% endfor %}
+    \end{itemize}
+
+    {% if election.election_required %}
+    \item \strong{Board Nominations and Election of Directors}
+    \begin{itemize}[leftmargin=1.1em]
+        \item Announcement of positions up for election
+              {% if election.seats_up_count %}({{ election.seats_up_count }} seat(s)){% endif %}
+              {% if election.director_term_length_years %}and term lengths ({{ election.director_term_length_years }}-year term(s)){% endif %}
+        \item Nominations from the floor (in addition to any pre-submitted candidates)
+        \item Distribution and collection of ballots and tally
+        \item Announcement of election results
+    \end{itemize}
+    {% else %}
+    \item \strong{Board of Directors Report}
+    \begin{itemize}[leftmargin=1.1em]
+        \item Update from the Board on current association matters
+        \item No director election is scheduled for this meeting
+    \end{itemize}
+    {% endif %}
+
+    \item \strong{Owner Questions and Open Forum}
+
+    \item \strong{Adjournment}
+\end{enumerate}
+
+{% if jx.org_meeting_after_annual %}
+\vspace{1em}
+\noindent\textit{Immediately following adjournment, the Board of Directors will hold its
+Organizational Meeting to elect officers for the ensuing year. Unit owners are welcome to observe.}
 {% endif %}
-
-{{ aitem("Financial Report",
-         "Treasurer or management will present the current financial summary and approved budget.") }}
-
-{% for item in meeting.special_agenda_items %}
-{{ aitem(item) }}
-{% endfor %}
-
-{{ aitem("Old Business") }}
-{{ aitem("New Business") }}
-{{ aitem("Adjournment of Annual Meeting") }}
-
-\bottomrule
-\end{tabular}
-
-{% if jx.include_org_meeting_note %}
-\vspace{0.25in}
-\begin{notebox}
-\textbf{Organizational Meeting of the Board of Directors}\\
-Immediately following the adjournment of the Annual Meeting of Unit Owners, the Board of Directors will hold its
-Organizational Meeting to elect officers for the ensuing year. Unit owners are welcome to observe but this is
-a board meeting, not a member meeting.
-{% if jx.org_meeting_note %}
-
-\smallskip
-\textit{ {{ jx.org_meeting_note | tex_escape }} }
-{% endif %}
-\end{notebox}
-{% endif %}
-
-\vspace{0.3in}
-{\small\color{midgray}
-\textit{The order of agenda items may be adjusted by the presiding officer at the meeting. Additional items may
-be introduced under New Business. Agenda items requiring a vote are conducted in accordance with the
-Association's governing documents and applicable state law.}
-}

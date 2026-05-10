@@ -1,21 +1,22 @@
-%% ════════════════════════════════════════════════════════════════
-%%  CANDIDATE BIOGRAPHICAL SKETCHES
-%% ════════════════════════════════════════════════════════════════
+%% CANDIDATE BIOGRAPHICAL SKETCHES
 \section{Board of Directors Candidates}
 
-\begin{center}
-{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
-{\large {{ meeting_year }} Annual Meeting --- Candidate Biographical Sketches}
-\end{center}
+\noindent
+\textbf{ {{ association_name | tex_escape }} }\\
+\textbf{ {{ meeting_year }} Annual Meeting --- Candidate Biographical Sketches}
 
-\vspace{0.1in}
-\noindent The following individuals have submitted nominations for election to the Board of Directors.
+\vspace{0.5em}
+
+\noindent
+The following individuals have submitted nominations for election to the Board of Directors.
 Unit owners will elect
-\textbf{{{ election.seats_up_count or 1 }} director(s)}
+\textbf{ {{ election.seats_up_count or 1 }} director(s) }
 at the Annual Meeting.
-{% if election.director_term_length_years %}Each director elected will serve a \textbf{{{ election.director_term_length_years }}-year term}.{% endif %}
+{% if election.director_term_length_years %}
+Each director elected will serve a \textbf{ {{ election.director_term_length_years }}-year term}.
+{% endif %}
 
-\vspace{0.2in}
+\vspace{1em}
 
 {% for candidate in election.candidate_bios %}
 \subsection*{ {{ candidate.name | tex_escape }} {% if candidate.incumbent %} (Incumbent) {% endif %}}
@@ -27,34 +28,33 @@ at the Annual Meeting.
 \end{tabular}
 
 {% if candidate.bio_text %}
-\vspace{0.1in}
+\vspace{0.25em}
 \noindent {{ candidate.bio_text | tex_escape }}
 {% endif %}
 
 {% if candidate.relevant_experience %}
-\vspace{0.1in}
+\vspace{0.25em}
 \noindent\textbf{Relevant Experience:} {{ candidate.relevant_experience | tex_escape }}
 {% endif %}
 
 {% if candidate.why_running %}
-\vspace{0.1in}
+\vspace{0.25em}
 \noindent\textbf{Why Running:} {{ candidate.why_running | tex_escape }}
 {% endif %}
 
 {% if not loop.last %}
-\vspace{0.15in}\noindent\rule{\linewidth}{0.2pt}\vspace{0.1in}
+\vspace{0.5em}\noindent\rule{\linewidth}{0.2pt}\vspace{0.25em}
 {% endif %}
 
 {% endfor %}
 
 {% if not election.candidate_bios %}
-\begin{notebox}
+\noindent
 \textbf{No candidate biographical sketches have been received.}
 Candidate information will be distributed to unit owners prior to the meeting or presented at the meeting.
 Nominations may also be made from the floor at the Annual Meeting.
-\end{notebox}
 {% endif %}
 
-\vspace{0.2in}
-{\small\color{midgray}\textit{Biographical information is provided by the candidates themselves. The Association
-makes no representations regarding the accuracy of candidate-submitted information.}}
+\vspace{0.5em}
+\noindent\textit{\small Biographical information is provided by the candidates themselves. The Association
+makes no representations regarding the accuracy of candidate-submitted information.}

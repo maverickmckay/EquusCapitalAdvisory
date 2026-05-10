@@ -1,97 +1,95 @@
-%% ════════════════════════════════════════════════════════════════
-%%  CANDIDATE / NOMINATION FORM
-%% ════════════════════════════════════════════════════════════════
+%% CANDIDATE / NOMINATION FORM
 \section{Board of Directors Nomination Form}
 
-\begin{center}
-{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
-{\large {{ meeting_year }} Annual Meeting --- Board of Directors Nomination}
-\end{center}
+\noindent
+\textbf{ {{ association_name | tex_escape }} }\\
+\textbf{ {{ meeting_year }} Annual Meeting --- Board of Directors Nomination}
 
-\vspace{0.15in}
+\vspace{0.5em}
 
-\noindent Any eligible unit owner in good standing may stand for election to the Board of Directors.
-{% if election.director_qualifications_notes %}
-{{ election.director_qualifications_notes | tex_escape }}
-{% else %}
-Please confirm eligibility requirements with the Association's governing documents.
-{% endif %}
-
+\noindent
+Any eligible unit owner in good standing may stand for election to the Board of Directors.
 {% if election.nomination_deadline %}
-\begin{warningbox}
-\textbf{Nomination Deadline:} Advance nominations must be received by
-\textbf{ {{ election.nomination_deadline | format_date }} }.
-Nominations may also be made from the floor at the Annual Meeting.
-\end{warningbox}
+Advance nominations must be received by \textbf{ {{ election.nomination_deadline | format_date }} }.
 {% endif %}
+Nominations may also be made from the floor at the Annual Meeting.
 
-\vspace{0.2in}
+\vspace{1em}
 
-{\large\bfseries CANDIDATE INFORMATION}
+\noindent\textbf{CANDIDATE INFORMATION}
 
-\vspace{0.15in}
+\vspace{0.5em}
 
 \noindent\begin{tabular}{@{}p{2in}p{3.8in}@{}}
-Full Name: & \fillline[3.8in] \\[12pt]
-Unit Number: & \fillline[1in] \\[12pt]
-Mailing Address: & \fillline[3.8in] \\[12pt]
-Phone: & \fillline[2in] \\[12pt]
-Email: & \fillline[2.5in] \\[12pt]
-Years as Owner: & \fillline[1in] \\[12pt]
+Full Name: & \rule{3.8in}{0.4pt} \\[12pt]
+Unit Number: & \rule{1in}{0.4pt} \\[12pt]
+Mailing Address: & \rule{3.8in}{0.4pt} \\[12pt]
+Phone: & \rule{2in}{0.4pt} \\[12pt]
+Email: & \rule{2.5in}{0.4pt} \\[12pt]
+Years as Owner: & \rule{1in}{0.4pt} \\[12pt]
 \end{tabular}
 
-\vspace{0.2in}
-{\large\bfseries QUALIFICATIONS AND BACKGROUND}
+\vspace{1em}
 
-\vspace{0.1in}
-\noindent Please describe your professional background, relevant experience, and community involvement (attach additional pages if needed):
+\noindent\textbf{QUALIFICATIONS AND BACKGROUND}
 
-\vspace{0.1in}
+\vspace{0.5em}
+
+\noindent
+Please describe your professional background, relevant experience, and community involvement
+(attach additional pages if needed):
+
+\vspace{0.5em}
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 
-\vspace{0.15in}
-{\large\bfseries REASON FOR SEEKING ELECTION}
+\vspace{0.5em}
 
-\vspace{0.1in}
-\noindent Why are you seeking election to the Board of Directors?
+\noindent\textbf{REASON FOR SEEKING ELECTION}
 
-\vspace{0.1in}
+\vspace{0.5em}
+
+\noindent
+Why are you seeking election to the Board of Directors?
+
+\vspace{0.5em}
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 \noindent\rule{\linewidth}{0.4pt}\\[18pt]
 \noindent\rule{\linewidth}{0.4pt}
 
-\vspace{0.2in}
-{\large\bfseries CERTIFICATION}
+\vspace{1em}
 
-\vspace{0.1in}
+\noindent\textbf{CERTIFICATION}
+
+\vspace{0.5em}
+
 \noindent I certify that:
-\begin{enumerate}[noitemsep]
-\item I am an owner of record of a unit in {{ association_name | tex_escape }}.
-\item I am current on all assessments and charges owed to the Association.
-\item I am not under any legal disability that would prevent me from serving.
-\item The information provided on this form is true and accurate to the best of my knowledge.
+\begin{enumerate}[leftmargin=1.4em,noitemsep]
+    \item I am an owner of record of a unit in {{ association_name | tex_escape }}.
+    \item I am current on all assessments and charges owed to the Association.
+    \item I am not under any legal disability that would prevent me from serving.
+    \item The information provided on this form is true and accurate to the best of my knowledge.
 \end{enumerate}
 
-\vspace{0.4in}
+\vspace{1em}
+
 \noindent\begin{tabular}{@{}p{0.45\linewidth}p{0.05\linewidth}p{0.45\linewidth}@{}}
 \rule{0.45\linewidth}{0.4pt} & & \rule{0.45\linewidth}{0.4pt} \\
 \small Signature & & \small Date \\
 \end{tabular}
 
-\vspace{0.3in}
-\begin{notebox}
-\textbf{Return this form to:}
+\vspace{1em}
+
+\noindent\textbf{Return this form to:}
 {% if management_contact %}
-{{ management_contact | tex_escape }}
-{% if management_email %}$\cdot$ {{ management_email | tex_escape }}{% endif %}
-{% if management_phone %}$\cdot$ {{ management_phone | tex_escape }}{% endif %}
+{{ management_contact | tex_escape }}{% if management_email %} --- \texttt{ {{ management_email | tex_escape }} }{% endif %}
+{% elif management_email %}
+\texttt{ {{ management_email | tex_escape }} }
 {% else %}
-\fillline[3in]
+\rule{3in}{0.4pt}
 {% endif %}
 {% if election.nomination_deadline %}
-\\[4pt]\textbf{Deadline: {{ election.nomination_deadline | format_date }}}
+\\[0.25em]\textbf{Deadline: {{ election.nomination_deadline | format_date }}}
 {% endif %}
-\end{notebox}

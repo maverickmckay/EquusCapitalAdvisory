@@ -1,95 +1,87 @@
-%% ════════════════════════════════════════════════════════════════
-%%  MEETING INSTRUCTIONS FOR ATTENDEES
-%% ════════════════════════════════════════════════════════════════
+%% MEETING INSTRUCTIONS FOR ATTENDEES
 \section{Meeting Instructions for Unit Owners}
 
-\begin{center}
-{\large\bfseries\color{navyblue} {{ association_name | tex_escape }} }\\[4pt]
-{\large {{ meeting_year }} Annual Meeting --- Instructions for Attendees}
-\end{center}
+\noindent
+\textbf{ {{ association_name | tex_escape }} }\\
+\textbf{ {{ meeting_year }} Annual Meeting --- Instructions for Attendees}
 
-\vspace{0.15in}
+\vspace{0.5em}
 
 \subsection*{Before the Meeting}
 
-\begin{itemize}
-\item \textbf{Review this packet.} Read the notice, agenda, and any proposed resolutions carefully before the meeting.
+\begin{itemize}[leftmargin=1.1em]
+    \item \strong{Review this packet.} Read the notice, agenda, and any proposed resolutions carefully
+    before the meeting.
 
-{% if election.election_required %}
-\item \textbf{Review candidates.} Candidate biographical sketches are included in this packet.
-  You may vote in person at the meeting or submit a proxy to designate how your vote should be cast.
-{% endif %}
+    {% if election.election_required %}
+    \item \strong{Review candidates.} Candidate biographical sketches are included in this packet.
+    You may vote in person at the meeting or submit a proxy to designate how your vote should be cast.
+    {% endif %}
 
-\item \textbf{Submit your proxy (if not attending).} If you cannot attend in person, please complete and return
-  the proxy form included in this packet to ensure your unit's vote is represented.
-{% if meeting.proxy_deadline %}
-  \textbf{Proxy deadline: {{ meeting.proxy_deadline | format_date }}.}
-{% endif %}
+    \item \strong{Submit your proxy (if not attending).} If you cannot attend in person, please complete
+    and return the proxy form included in this packet to ensure your unit's vote is represented.
+    {% if meeting.proxy_deadline %}
+    \textbf{Proxy deadline: {{ meeting.proxy_deadline | format_date }}.}
+    {% endif %}
 
-\item \textbf{Review the financial documents.} The financial summary is included. Detailed financial records
-  are available for inspection by appointment with management.
+    \item \strong{Review the financial documents.} The financial summary is included. Detailed financial
+    records are available for inspection by appointment with management.
 \end{itemize}
 
 \subsection*{At the Meeting}
 
-\begin{itemize}
-\item \textbf{Sign in.} Please sign the attendance/registration sheet upon arrival.
-{% if meeting.registration_time %}
-  Registration opens at \textbf{ {{ meeting.registration_time }} }.
-{% endif %}
+\begin{itemize}[leftmargin=1.1em]
+    \item \strong{Sign in.} Please sign the attendance and registration sheet upon arrival.
+    {% if meeting.registration_time %}
+    Registration opens at \textbf{ {{ meeting.registration_time }} }.
+    {% endif %}
 
-\item \textbf{Quorum.} The meeting will begin once quorum is confirmed. Quorum requires the presence,
-  in person or by proxy, of owners representing
-  {% if meeting.quorum_threshold %}\textbf{ {{ meeting.quorum_threshold }}\% } of the total votes.{% else %}the minimum number of votes required by the governing documents.{% endif %}
-  If quorum is not present when the meeting is called, the chair will announce adjournment procedures.
+    \item \strong{Quorum.} The meeting will begin once quorum is confirmed. Quorum requires the
+    presence, in person or by proxy, of owners representing
+    {% if meeting.quorum_threshold %}
+    \textbf{ {{ meeting.quorum_threshold }}\% } of the total votes.
+    {% else %}
+    the minimum number of votes required by the governing documents.
+    {% endif %}
+    If quorum is not present when the meeting is called to order, the chair will announce
+    adjournment procedures.
 
-\item \textbf{One vote per unit.} Each unit is entitled to one vote. If a unit has multiple owners,
-  they collectively cast one vote.
+    \item \strong{One vote per unit.} Each unit is entitled to one vote. If a unit has multiple
+    owners, they collectively cast one vote.
 
-\item \textbf{Decorum.} The meeting is conducted under the authority of the presiding officer.
-  Please be courteous and allow each speaker to finish. Questions and comments are heard during
-  the designated portions of the agenda.
+    \item \strong{Decorum.} The meeting is conducted under the authority of the presiding officer.
+    Please be courteous and allow each speaker to finish. Questions and comments are heard during
+    the designated portions of the agenda.
 
-\item \textbf{New Business.} Items of new business may be raised during the New Business portion
-  of the agenda. Action on new business items is subject to quorum and procedural requirements.
+    \item \strong{New Business.} Items of new business may be raised during the New Business portion
+    of the agenda. Action on new business items is subject to quorum and procedural requirements.
 \end{itemize}
 
 \subsection*{Proxy Holders}
 
+\noindent
 If you are serving as a proxy holder for another unit owner:
-\begin{itemize}[noitemsep]
-\item Bring the signed proxy form.
-\item Present it to the registration desk upon arrival.
-\item Vote according to any specific directions given on the proxy, or as you see fit if no direction is given.
+\begin{itemize}[leftmargin=1.1em]
+    \item Bring the signed proxy form to the meeting.
+    \item Present it to the registration desk upon arrival.
+    \item Vote according to any specific directions given on the proxy form, or as you see fit if
+    no specific direction is given.
 \end{itemize}
-
-{% if meeting.virtual_option %}
-\subsection*{Virtual / Remote Participation}
-
-{% if meeting.virtual_link %}
-This meeting will be accessible remotely at: \textbf{ {{ meeting.virtual_link | tex_escape }} }
-{% else %}
-Remote participation instructions will be distributed separately. Please contact management for access details.
-{% endif %}
-Remote participants may be subject to limitations on voting depending on the governing documents
-and meeting procedures. Confirm voting procedures with management in advance.
-
-{% endif %}
 
 \subsection*{After the Meeting}
 
-\begin{itemize}
-\item \textbf{Minutes.} Meeting minutes will be prepared and distributed to all unit owners within
-  the time required by the governing documents.
+\begin{itemize}[leftmargin=1.1em]
+    \item \strong{Minutes.} Meeting minutes will be prepared and distributed to all unit owners
+    within the time required by the governing documents.
 
-{% if jx.include_org_meeting_note %}
-\item \textbf{Organizational Meeting.} The Board will hold its Organizational Meeting immediately following
-  the Annual Meeting to elect officers. Unit owners are welcome to observe.
-{% endif %}
+    {% if jx.org_meeting_after_annual %}
+    \item \strong{Organizational Meeting.} The Board will hold its Organizational Meeting immediately
+    following the Annual Meeting to elect officers. Unit owners are welcome to observe.
+    {% endif %}
 
-\item \textbf{Contact information.}
-  For questions about this packet or the Annual Meeting, contact
-  {% if management_contact %}\textbf{ {{ management_contact | tex_escape }} }{% else %}the Association's management{% endif %}
-  {% if management_email %}at {{ management_email | tex_escape }}{% endif %}
-  {% if management_phone %}or {{ management_phone | tex_escape }}{% endif %}.
+    \item \strong{Contact information.}
+    For questions about this packet or the Annual Meeting, contact
+    {% if management_contact %}\textbf{ {{ management_contact | tex_escape }} }{% else %}the Association's management{% endif %}
+    {% if management_email %}at \texttt{ {{ management_email | tex_escape }} }{% endif %}
+    {% if management_phone %}or {{ management_phone | tex_escape }}{% endif %}.
 \end{itemize}
