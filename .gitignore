@@ -12,3 +12,4 @@ build/
 projects/
 *.log
 .DS_Store
+sample_data/demo_wisconsin_condo/output/
