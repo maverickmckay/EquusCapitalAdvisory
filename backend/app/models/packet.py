@@ -138,7 +138,99 @@ class ElectionProfile(BaseModel):
     seats_up_count: Optional[int] = None
 
 
+class BudgetYear(BaseModel):
+    """Full line-item budget for one fiscal year."""
+    # Income
+    condo_fees: float = 0.0
+    sales_transfer_fee: float = 0.0
+    interest: float = 0.0
+    late_fees: float = 0.0
+    reserve_transfer: float = 0.0
+    other_income: float = 0.0
+    total_income: float = 0.0
+
+    # Maintenance expenses
+    general_maintenance: float = 0.0
+    roof_chimney_gutters: float = 0.0
+    gutter_cleaning: float = 0.0
+    landscape_maintenance: float = 0.0
+    tree_care: float = 0.0
+    landscape_improvements: float = 0.0
+    pest_control: float = 0.0
+    total_maintenance: float = 0.0
+
+    # Contract / Admin expenses
+    insurance: float = 0.0
+    management: float = 0.0
+    snow_removal: float = 0.0
+    water_sewer: float = 0.0
+    legal_collection: float = 0.0
+    accounting: float = 0.0
+    postage_copies: float = 0.0
+    taxes_licenses: float = 0.0
+    banking_fees: float = 0.0
+    total_contract_admin: float = 0.0
+
+    total_expenses: float = 0.0
+    net_income: float = 0.0
+
+
+class BalanceSheet(BaseModel):
+    """Balance sheet snapshot."""
+    operating_account: float = 0.0
+    reserve_account: float = 0.0
+    cd2: Optional[float] = None
+    restricted_rental: Optional[float] = None
+    total_assets: float = 0.0
+    prepaid_fees: float = 0.0
+    retained_earnings: float = 0.0
+    net_income: float = 0.0
+
+
+class IncomeStatement(BaseModel):
+    """Annual income statement."""
+    total_income: float = 0.0
+    total_expenses: float = 0.0
+    net_income: float = 0.0
+
+
+class YTDStatement(BaseModel):
+    """Year-to-date financial results."""
+    as_of_date: Optional[date] = None
+    total_income: float = 0.0
+    total_expenses: float = 0.0
+    net_income: float = 0.0
+    month_income: float = 0.0
+    month_expenses: float = 0.0
+    month_net: float = 0.0
+
+
 class FinancialProfile(BaseModel):
+    # Structured budget tables (canonical — use these for detailed packets)
+    budget_year_1: Optional[int] = None       # e.g., 2025
+    budget_year_2: Optional[int] = None       # e.g., 2026
+    budget_y1: BudgetYear = Field(default_factory=BudgetYear)
+    budget_y2: BudgetYear = Field(default_factory=BudgetYear)
+
+    # Financial statements
+    prev_balance_sheet: BalanceSheet = Field(default_factory=BalanceSheet)
+    prev_income_statement: IncomeStatement = Field(default_factory=IncomeStatement)
+    cur_balance_sheet: BalanceSheet = Field(default_factory=BalanceSheet)
+    cur_ytd: YTDStatement = Field(default_factory=YTDStatement)
+
+    # Reserve / audit
+    reserve_fund_balance: Optional[float] = None
+    reserve_study_year: Optional[int] = None
+    reserve_percent_funded: Optional[float] = None
+    audit_completed: Optional[bool] = None
+    audit_year: Optional[int] = None
+
+    # Narrative notes
+    budget_notes: Optional[str] = None
+    key_financial_notes: List[str] = Field(default_factory=list)
+    financial_source_docs: List[str] = Field(default_factory=list)
+
+    # Legacy simple fields (kept for backward compatibility)
     approved_budget_year: Optional[int] = None
     approved_budget_total: Optional[float] = None
     approved_budget_notes: Optional[str] = None
@@ -149,14 +241,7 @@ class FinancialProfile(BaseModel):
     ytd_income: Optional[float] = None
     ytd_expenses: Optional[float] = None
     ytd_as_of_date: Optional[date] = None
-    reserve_fund_balance: Optional[float] = None
-    reserve_study_year: Optional[int] = None
-    reserve_percent_funded: Optional[float] = None
-    audit_completed: Optional[bool] = None
-    audit_year: Optional[int] = None
     key_budget_line_items: Dict[str, float] = Field(default_factory=dict)
-    key_financial_notes: List[str] = Field(default_factory=list)
-    financial_source_docs: List[str] = Field(default_factory=list)
 
 
 class PacketSections(BaseModel):

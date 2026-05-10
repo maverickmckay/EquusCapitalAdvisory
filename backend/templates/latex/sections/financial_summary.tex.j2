@@ -1,68 +1,164 @@
 %% BUDGET SUMMARIES
 \section{Budget Summaries}
 
-This section summarizes the approved budget for {{ association_name | tex_escape }}
-{% if financial.approved_budget_year %}for fiscal year {{ financial.approved_budget_year }}{% endif %},
-based on association financial records provided for this packet.
+{% set y1 = financial.budget_year_1 or (meeting_year - 1) %}
+{% set y2 = financial.budget_year_2 or meeting_year %}
+{% set b1 = financial.budget_y1 %}
+{% set b2 = financial.budget_y2 %}
+{% set has_detail = (b2.total_income > 0 or b2.total_expenses > 0) %}
+{% set has_y1 = (b1.total_income > 0 or b1.total_expenses > 0) %}
 
-{% if financial.approved_budget_total or financial.key_budget_line_items %}
+{% if has_detail %}
 
-\subsection{Operating Budget Summary}
+\subsection{Income}
 
-\subsubsection*{Approved Operating Budget ---
-{{ financial.approved_budget_year or meeting_year }}}
-\vspace{-0.6em}
-
-{% if financial.key_budget_line_items %}
 \begin{center}
-\begin{tabular}{@{}l{% if financial.prior_budget_total %}r{% endif %}r@{}}
+\begin{tabular}{@{}l{% if has_y1 %}r{% endif %}r@{}}
 \toprule
-\textbf{Budget Category} &
-{% if financial.prior_budget_total %}\textbf{ {{ (meeting_year - 1) }} Budget} &{% endif %}
-\textbf{ {{ financial.approved_budget_year or meeting_year }} Budget} \\
+\textbf{Category} &
+{% if has_y1 %}\textbf{ {{ y1 }} Budget} & {% endif %}
+\textbf{ {{ y2 }} Budget} \\
+\midrule
+Condominium Assessment Fees &
+{% if has_y1 %}\money{ {{ b1.condo_fees | format_currency }} } & {% endif %}
+\money{ {{ b2.condo_fees | format_currency }} } \\
+Sales / Transfer Fee &
+{% if has_y1 %}\money{ {{ b1.sales_transfer_fee | format_currency }} } & {% endif %}
+\money{ {{ b2.sales_transfer_fee | format_currency }} } \\
+Interest Income &
+{% if has_y1 %}\money{ {{ b1.interest | format_currency }} } & {% endif %}
+\money{ {{ b2.interest | format_currency }} } \\
+Late Fees &
+{% if has_y1 %}\money{ {{ b1.late_fees | format_currency }} } & {% endif %}
+\money{ {{ b2.late_fees | format_currency }} } \\
+Reserve Fund Transfer &
+{% if has_y1 %}\money{ {{ b1.reserve_transfer | format_currency }} } & {% endif %}
+\money{ {{ b2.reserve_transfer | format_currency }} } \\
+{% if b2.other_income > 0 or b1.other_income > 0 %}
+Other Income &
+{% if has_y1 %}\money{ {{ b1.other_income | format_currency }} } & {% endif %}
+\money{ {{ b2.other_income | format_currency }} } \\
+{% endif %}
+\midrule
+\strong{Total Income} &
+{% if has_y1 %}\strong{\money{ {{ b1.total_income | format_currency }} }} & {% endif %}
+\strong{\money{ {{ b2.total_income | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Maintenance Expenses}
+
+\begin{center}
+\begin{tabular}{@{}l{% if has_y1 %}r{% endif %}r@{}}
+\toprule
+\textbf{Category} &
+{% if has_y1 %}\textbf{ {{ y1 }} Budget} & {% endif %}
+\textbf{ {{ y2 }} Budget} \\
+\midrule
+General Maintenance \& Repairs &
+{% if has_y1 %}\money{ {{ b1.general_maintenance | format_currency }} } & {% endif %}
+\money{ {{ b2.general_maintenance | format_currency }} } \\
+Roof / Chimney / Gutters &
+{% if has_y1 %}\money{ {{ b1.roof_chimney_gutters | format_currency }} } & {% endif %}
+\money{ {{ b2.roof_chimney_gutters | format_currency }} } \\
+Gutter Cleaning &
+{% if has_y1 %}\money{ {{ b1.gutter_cleaning | format_currency }} } & {% endif %}
+\money{ {{ b2.gutter_cleaning | format_currency }} } \\
+Landscape Maintenance &
+{% if has_y1 %}\money{ {{ b1.landscape_maintenance | format_currency }} } & {% endif %}
+\money{ {{ b2.landscape_maintenance | format_currency }} } \\
+Tree Care &
+{% if has_y1 %}\money{ {{ b1.tree_care | format_currency }} } & {% endif %}
+\money{ {{ b2.tree_care | format_currency }} } \\
+Landscape Improvements &
+{% if has_y1 %}\money{ {{ b1.landscape_improvements | format_currency }} } & {% endif %}
+\money{ {{ b2.landscape_improvements | format_currency }} } \\
+Pest Control &
+{% if has_y1 %}\money{ {{ b1.pest_control | format_currency }} } & {% endif %}
+\money{ {{ b2.pest_control | format_currency }} } \\
+\midrule
+\strong{Total Maintenance} &
+{% if has_y1 %}\strong{\money{ {{ b1.total_maintenance | format_currency }} }} & {% endif %}
+\strong{\money{ {{ b2.total_maintenance | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Contract and Administrative Expenses}
+
+\begin{center}
+\begin{tabular}{@{}l{% if has_y1 %}r{% endif %}r@{}}
+\toprule
+\textbf{Category} &
+{% if has_y1 %}\textbf{ {{ y1 }} Budget} & {% endif %}
+\textbf{ {{ y2 }} Budget} \\
+\midrule
+Insurance &
+{% if has_y1 %}\money{ {{ b1.insurance | format_currency }} } & {% endif %}
+\money{ {{ b2.insurance | format_currency }} } \\
+Management &
+{% if has_y1 %}\money{ {{ b1.management | format_currency }} } & {% endif %}
+\money{ {{ b2.management | format_currency }} } \\
+Snow Removal &
+{% if has_y1 %}\money{ {{ b1.snow_removal | format_currency }} } & {% endif %}
+\money{ {{ b2.snow_removal | format_currency }} } \\
+Water \& Sewer &
+{% if has_y1 %}\money{ {{ b1.water_sewer | format_currency }} } & {% endif %}
+\money{ {{ b2.water_sewer | format_currency }} } \\
+Legal / Collection &
+{% if has_y1 %}\money{ {{ b1.legal_collection | format_currency }} } & {% endif %}
+\money{ {{ b2.legal_collection | format_currency }} } \\
+Accounting &
+{% if has_y1 %}\money{ {{ b1.accounting | format_currency }} } & {% endif %}
+\money{ {{ b2.accounting | format_currency }} } \\
+Postage / Copies &
+{% if has_y1 %}\money{ {{ b1.postage_copies | format_currency }} } & {% endif %}
+\money{ {{ b2.postage_copies | format_currency }} } \\
+Taxes / Licenses / Permits &
+{% if has_y1 %}\money{ {{ b1.taxes_licenses | format_currency }} } & {% endif %}
+\money{ {{ b2.taxes_licenses | format_currency }} } \\
+Banking Fees &
+{% if has_y1 %}\money{ {{ b1.banking_fees | format_currency }} } & {% endif %}
+\money{ {{ b2.banking_fees | format_currency }} } \\
+\midrule
+\strong{Total Contract / Admin} &
+{% if has_y1 %}\strong{\money{ {{ b1.total_contract_admin | format_currency }} }} & {% endif %}
+\strong{\money{ {{ b2.total_contract_admin | format_currency }} }} \\
+\midrule
+\strong{Total Expenses} &
+{% if has_y1 %}\strong{\money{ {{ b1.total_expenses | format_currency }} }} & {% endif %}
+\strong{\money{ {{ b2.total_expenses | format_currency }} }} \\
+\strong{Net Income / (Deficit)} &
+{% if has_y1 %}\strong{\money{ {{ b1.net_income | format_currency }} }} & {% endif %}
+\strong{\money{ {{ b2.net_income | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+{% if financial.budget_notes %}
+\vspace{0.5em}
+\noindent {{ financial.budget_notes | tex_escape }}
+{% endif %}
+
+{% elif financial.key_budget_line_items %}
+{# Fallback: legacy flat line-items dict #}
+\subsection{Operating Budget Summary}
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Category} & \textbf{ {{ y2 }} Budget} \\
 \midrule
 {% for category, amount in financial.key_budget_line_items.items() %}
-{{ category | tex_escape }} &
-{% if financial.prior_budget_total %}--- &{% endif %}
-\money{ {{ amount | format_currency }} } \\
+{{ category | tex_escape }} & \money{ {{ amount | format_currency }} } \\
 {% endfor %}
 \midrule
 {% if financial.approved_budget_total %}
-{% if financial.prior_budget_total %}
-\strong{Total Approved Budget} & \money{ {{ financial.prior_budget_total | format_currency }} } & \money{ {{ financial.approved_budget_total | format_currency }} } \\
-{% else %}
-\strong{Total Approved Budget} & \money{ {{ financial.approved_budget_total | format_currency }} } \\
-{% endif %}
+\strong{Total} & \strong{\money{ {{ financial.approved_budget_total | format_currency }} }} \\
 {% endif %}
 \bottomrule
 \end{tabular}
 \end{center}
-{% else %}
-\begin{center}
-\begin{tabular}{@{}l{% if financial.prior_budget_total %}r{% endif %}r@{}}
-\toprule
-{% if financial.prior_budget_total %}
-\textbf{Item} & \textbf{ {{ (meeting_year - 1) }} Budget} & \textbf{ {{ financial.approved_budget_year or meeting_year }} Budget} \\
-{% else %}
-\textbf{Item} & \textbf{Amount} \\
-{% endif %}
-\midrule
-{% if financial.prior_budget_total %}
-Total Operating Budget &
-\money{ {{ financial.prior_budget_total | format_currency }} } &
-\money{ {{ financial.approved_budget_total | format_currency }} } \\
-{% else %}
-Total Approved Operating Budget & \money{ {{ financial.approved_budget_total | format_currency }} } \\
-{% endif %}
-\bottomrule
-\end{tabular}
-\end{center}
-{% endif %}
-
-{% if financial.approved_budget_notes %}
-\vspace{0.5em}
-\noindent\textit{ {{ financial.approved_budget_notes | tex_escape }} }
-{% endif %}
 
 {% else %}
 \noindent\textit{Approved budget figures have not been provided for this packet.
@@ -94,73 +190,143 @@ Owners may request copies from management.}
 %% FINANCIAL STATEMENTS
 \section{Financial Statements}
 
-This section provides a summary of the Association's financial statements based on records
-provided for this packet.
+{% set bs_prev = financial.prev_balance_sheet %}
+{% set is_prev = financial.prev_income_statement %}
+{% set bs_cur  = financial.cur_balance_sheet %}
+{% set ytd     = financial.cur_ytd %}
+{% set has_prev_bs = (bs_prev.total_assets > 0) %}
+{% set has_ytd    = (ytd.total_income > 0 or ytd.total_expenses > 0) %}
 
-%% Prior Year
-{% if financial.prior_year_end_income or financial.prior_year_end_expenses or financial.prior_year_end_net %}
-\subsection{ {{ (meeting_year - 1) }} Year-End Summary}
+{% if has_prev_bs %}
+\subsection{ {{ y1 }} Year-End Financial Statements}
 
-{% if financial.prior_year_end_income or financial.prior_year_end_expenses %}
-\subsubsection*{Income Statement for {{ (meeting_year - 1) }}}
+\subsubsection*{Balance Sheet --- As of December 31, {{ y1 }}}
 \vspace{-0.6em}
 
-\begin{itemize}[leftmargin=1.1em]
-    {% if financial.prior_year_end_income %}
-    \item Total Income: \money{ {{ financial.prior_year_end_income | format_currency }} }
-    {% if financial.prior_budget_total %}(budget: \money{ {{ financial.prior_budget_total | format_currency }} }){% endif %}
-    {% endif %}
-    {% if financial.prior_year_end_expenses %}
-    \item Total Expenses: \money{ {{ financial.prior_year_end_expenses | format_currency }} }
-    {% endif %}
-    {% if financial.prior_year_end_net %}
-    \item \strong{Net Income: \money{ {{ financial.prior_year_end_net | format_currency }} }}
-    {% endif %}
-    {% for note in financial.key_financial_notes %}
-    \item {{ note | tex_escape }}
-    {% endfor %}
-\end{itemize}
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Assets} & \textbf{Amount} \\
+\midrule
+Operating Account & \money{ {{ bs_prev.operating_account | format_currency }} } \\
+Reserve Account & \money{ {{ bs_prev.reserve_account | format_currency }} } \\
+{% if bs_prev.cd2 is not none and bs_prev.cd2 > 0 %}
+CD / Money Market & \money{ {{ bs_prev.cd2 | format_currency }} } \\
+{% endif %}
+{% if bs_prev.restricted_rental is not none and bs_prev.restricted_rental > 0 %}
+Restricted --- Rental Deposits & \money{ {{ bs_prev.restricted_rental | format_currency }} } \\
+{% endif %}
+\midrule
+\strong{Total Assets} & \strong{\money{ {{ bs_prev.total_assets | format_currency }} }} \\
+\toprule
+\textbf{Liabilities \& Equity} & \\
+\midrule
+Prepaid Assessment Fees & \money{ {{ bs_prev.prepaid_fees | format_currency }} } \\
+Retained Earnings & \money{ {{ bs_prev.retained_earnings | format_currency }} } \\
+Net Income (Current Year) & \money{ {{ bs_prev.net_income | format_currency }} } \\
+\midrule
+\strong{Total Liabilities \& Equity} & \strong{\money{ {{ bs_prev.total_assets | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+{% if is_prev.total_income > 0 or is_prev.total_expenses > 0 %}
+\subsubsection*{Income Statement --- January 1 -- December 31, {{ y1 }}}
+\vspace{-0.6em}
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Item} & \textbf{Amount} \\
+\midrule
+Total Income & \money{ {{ is_prev.total_income | format_currency }} } \\
+Total Expenses & \money{ {{ is_prev.total_expenses | format_currency }} } \\
+\midrule
+\strong{Net Income / (Deficit)} & \strong{\money{ {{ is_prev.net_income | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
 {% endif %}
 
+{% for note in financial.key_financial_notes %}
+\noindent {{ note | tex_escape }}
+
+{% endfor %}
+
 {% if financial.audit_completed %}
-\noindent
-An independent
+\noindent An independent
 {% if financial.audit_year %}{{ financial.audit_year }}{% endif %}
-audit or review report has been prepared for the Association.
-Copies are available from management upon request.
+audit or review has been prepared. Copies are available from management upon request.
 {% endif %}
 
 {% else %}
 \noindent\textit{Prior year financial statements have not been provided for this packet.}
 
-{% if jx.annual_financial_report_required %}
+{% if jx.annual_report_notes %}
 \vspace{0.5em}
-\noindent\textit{Note: {{ jx.annual_report_notes | tex_escape if jx.annual_report_notes else "The governing documents require an annual financial report be furnished to owners. Owners may request copies from management." }}
-}
+\noindent\textit{ {{ jx.annual_report_notes | tex_escape }} }
 {% endif %}
 {% endif %}
 
-%% Year-to-Date
-{% if financial.ytd_income or financial.ytd_expenses %}
-\subsection{ {{ meeting_year }} Year-to-Date Highlights
-{% if financial.ytd_as_of_date %}(Through {{ financial.ytd_as_of_date | format_date }}){% endif %}
+{% if has_ytd %}
+\subsection{ {{ y2 }} Year-to-Date Highlights%
+{% if ytd.as_of_date %} (Through {{ ytd.as_of_date | format_date }}){% endif %}
 }
 
-\subsubsection*{Income Statement (Year-to-Date
-{% if financial.ytd_as_of_date %}through {{ financial.ytd_as_of_date | format_date }}{% endif %})}
+{% if bs_cur.total_assets > 0 %}
+\subsubsection*{Balance Sheet%
+{% if ytd.as_of_date %} --- As of {{ ytd.as_of_date | format_date }}{% endif %}
+}
 \vspace{-0.6em}
 
-\begin{itemize}[leftmargin=1.1em]
-    {% if financial.ytd_income %}
-    \item Year-to-Date Income: \money{ {{ financial.ytd_income | format_currency }} }
-    {% endif %}
-    {% if financial.ytd_expenses %}
-    \item Year-to-Date Expenses: \money{ {{ financial.ytd_expenses | format_currency }} }
-    {% endif %}
-    {% if financial.ytd_income and financial.ytd_expenses %}
-    \item \strong{Year-to-Date Net Income: \money{ {{ (financial.ytd_income - financial.ytd_expenses) | format_currency }} }}
-    {% endif %}
-\end{itemize}
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Assets} & \textbf{Amount} \\
+\midrule
+Operating Account & \money{ {{ bs_cur.operating_account | format_currency }} } \\
+Reserve Account & \money{ {{ bs_cur.reserve_account | format_currency }} } \\
+{% if bs_cur.cd2 is not none and bs_cur.cd2 > 0 %}
+CD / Money Market & \money{ {{ bs_cur.cd2 | format_currency }} } \\
+{% endif %}
+{% if bs_cur.restricted_rental is not none and bs_cur.restricted_rental > 0 %}
+Restricted --- Rental Deposits & \money{ {{ bs_cur.restricted_rental | format_currency }} } \\
+{% endif %}
+\midrule
+\strong{Total Assets} & \strong{\money{ {{ bs_cur.total_assets | format_currency }} }} \\
+\toprule
+\textbf{Liabilities \& Equity} & \\
+\midrule
+Prepaid Assessment Fees & \money{ {{ bs_cur.prepaid_fees | format_currency }} } \\
+Retained Earnings & \money{ {{ bs_cur.retained_earnings | format_currency }} } \\
+Net Income (Current Year) & \money{ {{ bs_cur.net_income | format_currency }} } \\
+\midrule
+\strong{Total Liabilities \& Equity} & \strong{\money{ {{ bs_cur.total_assets | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+{% endif %}
+
+\subsubsection*{Income Statement (Year-to-Date%
+{% if ytd.as_of_date %} through {{ ytd.as_of_date | format_date }}{% endif %}
+)}
+\vspace{-0.6em}
+
+\begin{center}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Item} & \textbf{Month} & \textbf{Year-to-Date} \\
+\midrule
+Total Income & \money{ {{ ytd.month_income | format_currency }} } & \money{ {{ ytd.total_income | format_currency }} } \\
+Total Expenses & \money{ {{ ytd.month_expenses | format_currency }} } & \money{ {{ ytd.total_expenses | format_currency }} } \\
+\midrule
+\strong{Net Income / (Deficit)} &
+\strong{\money{ {{ ytd.month_net | format_currency }} }} &
+\strong{\money{ {{ ytd.net_income | format_currency }} }} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
 {% endif %}
 
 {% if financial.financial_source_docs %}
